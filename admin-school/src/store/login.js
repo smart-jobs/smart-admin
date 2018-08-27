@@ -20,7 +20,7 @@ export const actions = {
     try {
       // console.log(this.$axios);
       //let res = await auth.login({ username, password });
-      let res = await this.$axios.$post('/smart/api/login', {username, password})
+      let res = await this.$axios.$post('/school/api/login', {username, password})
       console.log(res);
       if (res.errcode && res.errcode !== 0) {
         commit(types.LOGIN_FAILURE);
@@ -39,14 +39,14 @@ export const actions = {
   },
   async fetch({ commit/* , state */ }, { username }) {
     // const res = await auth.fetch({ username });
-    const res = await this.$axios.$get('/smart/api/userinfo', { username })
+    const res = await this.$axios.$get('/school/api/userinfo', { username })
     const { userinfo } = res;
     commit(types.USER_INFO, userinfo);
     return res;
   },
   async logout({ commit }) {
     // const res = await auth.fetch({ username });
-    const res = await this.$axios.$post('/smart/api/logout')
+    const res = await this.$axios.$post('/school/api/logout')
     if (res.errcode && res.errcode === 0) {
       commit(types.LOGOUT_SUCCESS);
     }
