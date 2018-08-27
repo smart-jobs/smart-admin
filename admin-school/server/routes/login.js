@@ -10,12 +10,14 @@ const users = [
 
 /* GET users listing. */
 router.post('/api/login', function (req, res, next) {
+  /*
   let user = users.find(p=>p.username === req.body.username);
   if (user && req.body.password === user.password) {
     req.session.authUser = user;
     return res.json({ errcode: 0, errmsg: 'ok', username: user.username })
   }
-  res.json({ errcode: -1, errmsg: '用户名或者密码错误' })
+  res.json({ errcode: -1, errmsg: '用户名或者密码错误' })*/
+  res.json({ errcode: -1, errmsg: '功能暂未上线，请稍候再试...' })
 })
 
 /* GET user by ID. */
