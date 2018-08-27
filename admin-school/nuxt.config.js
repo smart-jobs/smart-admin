@@ -25,7 +25,7 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', href: '/master/naf-icons/iconfont.css' }
+      { rel: 'stylesheet', href: '/school/naf-icons/iconfont.css' }
     ]
   },
   /*
@@ -75,7 +75,7 @@ module.exports = {
     ** Build configuration 
     */
   build: {
-    publicPath: '/master/_nuxt/',
+    publicPath: '/school/_nuxt/',
     vendor:['axios', 'element-ui', 'babel-polyfill'],
     babel:{
         "plugins":[
@@ -104,7 +104,7 @@ module.exports = {
     }
   },
   router: {
-    base: '/master/',
+    base: '/school/',
     routes: [
       { path: '/system/contacts', meta: {mymeta: 'hello,meta'}}
     ]

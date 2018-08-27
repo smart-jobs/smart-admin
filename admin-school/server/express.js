@@ -23,8 +23,8 @@ const login = require('./routes/login')
 const dept = require('./routes/dept')
 
 // Import API Routes
-app.use('/master/', login)
-app.use('/master/', dept)
+app.use('/school/', login)
+app.use('/school/', dept)
 
 // We instantiate Nuxt.js with the options
 config.isProd = process.env.NODE_ENV === 'production';
@@ -36,5 +36,5 @@ if (config.dev) {
   builder.build()
 }
 app.use(nuxt.render)
-app.listen(3100)
-console.log('Server is listening on http://localhost:3100')
+app.listen(3200)
+console.log('Server is listening on http://localhost:3200')
