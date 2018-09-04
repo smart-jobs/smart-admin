@@ -1,13 +1,13 @@
 <template>
-  <el-menu default-active="0" class="nav-menu" v-bind="themeStyles"
+  <el-menu ref="menu" default-active="0" class="nav-menu" v-bind="themeStyles"
      :collapse="isCollapse" :router="false">
-    <naf-menu-item v-for="(item,idx) in menus" :key="idx" :index="idx.toString()" :title="item.title"
+    <naf-menu-item v-for="(item,idx) in menuItems" :key="idx" :index="idx.toString()" :title="item.title"
       :options="item.options" :children="item.children" :target="item.target">
     </naf-menu-item>
   </el-menu>
 </template>
 <script>
-import { menus } from '@/config/menus';
+// import { menus } from '@/config/menus';
 import NafMenuItem from './menu-item';
 
 export default {
@@ -17,12 +17,20 @@ export default {
   props: {
     theme: String,
     isCollapse: Boolean,
+    menuItems: Array,
   },
   data() {
     return {
       msg: 'Use Vue 2.0 Today!',
-      menus,
+      // menus,
     };
+  },
+  mounted: function () {
+    this.$nextTick(_ => {
+      // Code that will run only after the
+      // entire view has been rendered
+      this.$refs.menu.open('0');
+    })
   },
   computed: {
     // 计算属性的 getter
@@ -47,5 +55,4 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-
 </style>

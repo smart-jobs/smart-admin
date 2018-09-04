@@ -1,3 +1,4 @@
+<!--登录页面布局，只有footer-->
 <template>
   <div style="height:100%;overflow:auto;">
     <transition name="form-fade" mode="in-out">
@@ -28,12 +29,6 @@ export default {
 
 <style lang="less" scoped>
 @import '~@/style/theme';
-
-#__nuxt,
-#__layout {
-  width: 100%;
-  height: 100%;
-}
 
 .footer {
   position: absolute;

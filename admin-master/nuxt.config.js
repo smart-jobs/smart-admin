@@ -9,6 +9,8 @@ const resolve = (dir) => {
 //   return (menu && menu.meta) || {};
 // }
 
+const url_prefix = '/master';
+
 module.exports = {
   // mode: 'spa',
   srcDir: 'src',
@@ -25,7 +27,7 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', href: '/master/naf-icons/iconfont.css' }
+      { rel: 'stylesheet', href: `/${url_prefix}/naf-icons/iconfont.css` }
     ]
   },
   /*
@@ -61,6 +63,7 @@ module.exports = {
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
     proxy: true,
+    prefix: url_prefix,
   },
   proxy: {
     '/apps.tcdg': 'http://wxqd.cpcxc.com/',
@@ -75,7 +78,7 @@ module.exports = {
     ** Build configuration 
     */
   build: {
-    publicPath: '/master/_nuxt/',
+  publicPath: `${url_prefix}/_nuxt/`,
     vendor:['axios', 'element-ui', 'babel-polyfill'],
     babel:{
         "plugins":[
@@ -104,17 +107,21 @@ module.exports = {
     }
   },
   router: {
-    base: '/master/',
-    routes: [
-      { path: '/system/contacts', meta: {mymeta: 'hello,meta'}}
-    ]
-    // middleware: ['meta'],
-    // extendRoutes (routes, resolve) {
-    //   let ret= routes.map(p=>({...p, meta: RouteMeta(p.path)}));
-    //   console.log(ret);
-    //   return ret;
-    // }
+    base: `${url_prefix}/`,
+    extendRoutes (routes) {
+      // let ret= routes.map(p=>({...p, meta: RouteMeta(p.path)}));
+      // console.log(ret);
+      // return ret;
+
+      // TODO: 重定向默认地址到'/system'
+      let index = routes.findIndex(p=>p.path === '/');
+      if(index != -1)
+        routes[index] = { path: '/', redirect: '/system' };
+      else
+        routes.push({ path: '/', redirect: '/system' });
+    }
   },  
+  // middleware: ['meta'],
   // serverMiddleware: [
   //   // API middleware
   //   './server/index.js'

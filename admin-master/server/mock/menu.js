@@ -1,12 +1,68 @@
+const { Router } = require('express')
 
-// import pages from '@/views';
-const pages = [];
+const router = Router()
+
+const navDatas = [
+  {
+    title: '系统管理',
+    path: '/system',
+    module: 'system',
+  },
+  {
+    title: '招聘管理',
+    path: '/jobs',
+    module: 'jobs',
+  },
+  {
+    title: '信息发布',
+    path: '/cms',
+    module: 'cms',
+  },
+  {
+    title: '友情链接',
+    module: 'links',
+    children: [
+      {
+        title: '中心网站',
+        url: 'http://www.jilinjobs.cn',
+        target: '_blank',
+        icon: 'lianjie',
+      },
+      {
+        title: '吉林省教育厅',
+        url: 'http://www.jledu.gov.cn/jyt/',
+        target: '_blank',
+        icon: 'lianjie',
+      },
+      {
+        title: '学信网',
+        url: 'http://www.chsi.com.cn/',
+        target: '_blank',
+        icon: 'lianjie',
+      },
+      {
+        title: '全国大学生就业一站式服务系统',
+        url: 'http://jilinbys.ncss.org.cn/',
+        target: '_blank',
+        icon: 'lianjie',
+      },
+      {
+        title: '新职业',
+        tooltip: '教育部大学生就业网',
+        url: 'http://www.ncss.org.cn/',
+        target: '_blank',
+        icon: 'lianjie',
+      },
+    ],
+  },
+];
 
 const datas = [
   {
     title: '系统管理',
     path: '/system',
     icon: 'system',
+    module: 'system',
     children: [
       /*{
         title: '通讯录',
@@ -54,25 +110,26 @@ const datas = [
     title: '企业管理',
     path: '/corp',
     icon: 'corp',
+    module: 'jobs',
     children: [
       {
         title: '注册审核',
-        path: '/corp/check',
+        path: '/jobs/corp/check',
         icon: 'shenhe',
       },
       {
         title: '信息认证',
-        path: '/corp/info',
+        path: '/jobs/corp/info',
         icon: 'renzheng',
       },
       {
         title: '积分体系',
-        path: '/corp/points',
+        path: '/jobs/corp/points',
         icon: 'jifen',
       },
       {
         title: '企业用户',
-        path: '/corp/user',
+        path: '/jobs/corp/user',
         icon: 'corpuser',
       },
     ],
@@ -81,21 +138,22 @@ const datas = [
     title: '招聘管理',
     path: '/job',
     icon: 'job',
+    module: 'jobs',
     children: [
       {
         title: '招聘信息',
-        path: '/job/job-info',
+        path: '/jobs/job-info',
         icon: 'info',
       },
       {
         title: '招聘会',
-        path: '/job/job-fair',
+        path: '/jobs/job-fair',
         page: 'job.fair',
         icon: 'info',
       },
       {
         title: '校园宣讲会',
-        path: '/job/campus-talk',
+        path: '/jobs/campus-talk',
         icon: 'info',
       },
     ],
@@ -104,6 +162,7 @@ const datas = [
     title: '信息发布',
     path: '/cms',
     icon: 'news',
+    module: 'cms',
     children: [
       {
         title: '通知公告',
@@ -125,6 +184,7 @@ const datas = [
   {
     title: '友情链接',
     icon: 'menu',
+    module: 'links',
     children: [
       {
         title: '中心网站',
@@ -161,54 +221,31 @@ const datas = [
   },
 ];
 
-export const MapMenu = item => ({
+const MapMenu = (catalog = []) => item => ({
   title: item.title,
   options: {
     icon: item.icon,
     path: item.path,
     url: item.url,
     target: item.target,
-    tooltip: item.tooltip
+    tooltip: item.tooltip,
+    module: item.module,
+    meta: { catalog: catalog.concat(item.title) },
   },
-  children: (item.children || []).map(MapMenu),
+  children: (item.children || []).map(MapMenu(catalog.concat(item.title))),
 });
 
+const menus = datas.map(MapMenu());
+const modules = navDatas.map(MapMenu());
 
-function DeepGetPropertyValue(obj, name) {
-  if (!obj) {
-    return undefined;
-  }
-  const names = name.split('.', 2);
-  if (names.length === 1) {
-    return obj[name];
-  }
-  return DeepGetPropertyValue(obj[names[0]], names[1]);
-}
+/* GET menus define. */
+router.get('/api/menu/load', function (req, res, next) {
+  res.json({errcode: 0, errmsg: 'ok', data: {items: menus, modules}})
+})
+router.get('/api/menu/:module', function (req, res, next) {
+  const module = req.params.module;
+  const items = menus.filter(p=>p.options.module == module);
+  res.json({errcode: 0, errmsg: 'ok', data: {items, modules}})
+})
 
-/**
- *
- * @param {*} catalog 父节点的路径信息
- * 菜单定义
- *  title 菜单标题
- *  tooltip 提示信息
- *  icon 菜单图标,如果使用element-ui的图标，直接用图标全名，如：el-icon-menu;如果使用naf图标，只写图标名字，如：user，实际上使用图标naf-icon-user
- *  children 子菜单项
- *  url 外链地址
- *  target 打开方式：_self、_blank
- *  path 路由路径
- *  page 页面，可以是两种形式：1.页面名（从pages中获取）2.页面对象（直接加载显示）。url和page不能同时出现
- */
-const MapRoute = (catalog = []) => item => [{
-  path: item.path,
-  component: typeof (item.page) === 'string' ? DeepGetPropertyValue(pages, item.page) : item.page || pages.Error404,
-  meta: { catalog: catalog.concat(item.title) },
-},
-].concat((item.children || []).map(MapRoute(catalog.concat(item.title)))
-  .reduce((p, c) => p.concat(c), [])
-  .filter(p => p.path));
-
-
-export const menus = datas.map(MapMenu);
-export const routes = datas.map(MapRoute())
-  .reduce((p, c) => p.concat(c), [])
-  .filter(p => p.path);
+module.exports = router

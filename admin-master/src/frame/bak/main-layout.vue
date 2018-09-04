@@ -29,7 +29,7 @@
 import config from '@/config';
 import NafHeader from './header';
 import NafFooter from './footer';
-import NafMenu from './menu-pane';
+import NafMenu from './sider';
 import NafBread from './bread';
 
 const defaultConfig = {

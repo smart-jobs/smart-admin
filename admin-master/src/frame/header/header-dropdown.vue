@@ -29,12 +29,6 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <!--简洁用户菜单-->
-        <div class="right lite">
-            <span class="name">{{userinfo && userinfo.fullname || '管理員'}}</span>
-            <span>|</span>
-            <el-button type="text" @click="handleLogout">退出</el-button>
-        </div>
       </div>
   </div>    
 </template>

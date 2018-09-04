@@ -11,7 +11,7 @@ export const state = () => ({
 export const actions = {
   async load({ commit }) {
     try {
-      let res = await this.$axios.$get('/master/api/dept/list')
+      let res = await this.$axios.$get('/api/dept/list')
       console.log(res);
       if (res.errcode === 0) {
         commit(types.DEPT_LOADED, res.data);
