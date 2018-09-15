@@ -10,7 +10,7 @@
   </div>
 </template>
 <script>
-import NafFooter from '@/frame/footer';
+import NafFooter from '@/naf/frame/footer';
 import config from '@/config';
 
 const { layout } = config;

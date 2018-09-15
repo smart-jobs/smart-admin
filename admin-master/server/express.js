@@ -4,11 +4,13 @@
 const { Nuxt, Builder } = require('nuxt-edge')
 const bodyParser = require('body-parser')
 const session = require('express-session')
+const cookieParser = require('cookie-parser');
 const app = require('express')()
 let config = require('../nuxt.config.js')
 
 // Body parser, to access `req.body`
-app.use(bodyParser.json())
+app.use('/master/api/login', bodyParser.json())
+app.use(cookieParser());
 
 // Sessions to create `req.session`
 app.use(session({
@@ -20,7 +22,6 @@ app.use(session({
 
 // Import API Routes
 app.use('/master/', require('./mock/login'))
-app.use('/master/', require('./mock/dept'))
 app.use('/master/', require('./mock/menu'))
 
 // We instantiate Nuxt.js with the options

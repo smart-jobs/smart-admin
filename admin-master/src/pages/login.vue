@@ -83,12 +83,7 @@ export default {
               duration: 1000
             });
             this.$router.push(this.$route.query.redirect || '/');
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.errmsg
-            });
-          }
+          } 
         } else {
           this.$notify.error({
             title: '错误',

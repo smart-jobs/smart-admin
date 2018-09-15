@@ -4,11 +4,13 @@
 const { Nuxt, Builder } = require('nuxt-edge')
 const bodyParser = require('body-parser')
 const session = require('express-session')
+const cookieParser = require('cookie-parser');
 const app = require('express')()
 let config = require('../nuxt.config.js')
 
 // Body parser, to access `req.body`
-app.use(bodyParser.json())
+app.use('/school/api/login', bodyParser.json())
+app.use(cookieParser());
 
 // Sessions to create `req.session`
 app.use(session({
@@ -18,13 +20,9 @@ app.use(session({
   cookie: { maxAge: 600000 }
 }))
 
-// Require API routes
-const login = require('./routes/login')
-const dept = require('./routes/dept')
-
 // Import API Routes
-app.use('/school/', login)
-app.use('/school/', dept)
+app.use('/school/', require('./mock/login'))
+app.use('/school/', require('./mock/menu'))
 
 // We instantiate Nuxt.js with the options
 config.isProd = process.env.NODE_ENV === 'production';

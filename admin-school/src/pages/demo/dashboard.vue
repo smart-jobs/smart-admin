@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import tendency from '@/components/chart/tendency';
+import tendency from '@/naf/chart/tendency';
 import moment from 'moment';
 
 export default {

@@ -161,7 +161,7 @@ const datas = [
   },
 ];
 
-const MapMenu = item => ({
+export const MapMenu = item => ({
   title: item.title,
   options: {
     icon: item.icon,

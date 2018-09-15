@@ -7,10 +7,3 @@ export const USER_INFO = 'USER_INFO';
 export const APPS_LOADED = 'APPS_LOADED';
 export const APPS_SELECTED = 'APPS_SELECTED';
 
-export const DEPT_LOADED = 'DEPT_LOADED';
-export const DEPT_SELECTED = 'DEPT_SELECTED';
-
-export const NAV_MENU_LOADED = 'NAV_MENU_LOADED';
-export const NAV_MODULE_SELECTED = 'NAV_MODULE_SELECTED';
-export const NAV_SWITCH_MODE = 'NAV_SWITCH_MODE';
-export const NAV_TOGGLE_COLLAPSE = 'NAV_TOGGLE_COLLAPSE';

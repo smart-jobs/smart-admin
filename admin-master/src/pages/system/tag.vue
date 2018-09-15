@@ -2,7 +2,7 @@
   <demo-table :fields="fields" :filters="filters"></demo-table>
 </template>
 <script>
-import DemoTable from '@/components/data/demo-table';
+import DemoTable from '@/naf/data/demo-table';
 
 export default {
   components: {

@@ -28,7 +28,9 @@ module.exports = {
         'state', // for vuex state
         'acc', // for reduce accumulators
         'req', // for server request 
-        'e' // for e.returnvalue
+        'e', // for e.returnvalue
+        'Vue', // for Vue
+        'routes',
       ]
     }],
     // allow debugger during development

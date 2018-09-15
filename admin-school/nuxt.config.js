@@ -1,17 +1,22 @@
-const path = require("path");
+// const path = require("path");
 // const menus = require('./src/config/menus').routes;
 
-const resolve = (dir) => {
-  return path.join(__dirname, '..', dir)
-}
+// const resolve = (dir) => {
+//   return path.join(__dirname, '..', dir)
+// }
 // const RouteMeta = (path) => {
 //   const menu = menus.find(p=>p.path==path);
 //   return (menu && menu.meta) || {};
 // }
 
+const url_prefix = `/school`;
+
 module.exports = {
   // mode: 'spa',
   srcDir: 'src',
+  // server: {
+  //   port: 3100,
+  // },
   /*
   ** Headers of the page
   */
@@ -25,7 +30,7 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', href: '/school/naf-icons/iconfont.css' }
+      { rel: 'stylesheet', href: `${url_prefix}/naf-icons/iconfont.css` }
     ]
   },
   /*
@@ -45,13 +50,14 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/element-ui', '@/plugins/axios'
+    '@/plugins/element-ui', '@/plugins/axios', '@/plugins/check-res', '@/plugins/naf-dict'
   ],
   /*
   ** Nuxt.js modules
   */
   modules: [
     // Doc: https://github.com/nuxt-community/axios-module#usage
+    ['@nuxtjs/proxy', { pathRewrite: { '.*/api/system/dict' : '/', '.*/api/system' : '/' } }],
     '@nuxtjs/axios',
     // '~/modules/router-meta'
   ],
@@ -61,10 +67,13 @@ module.exports = {
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
     proxy: true,
+    prefix: `${url_prefix}/api`,
+    port: 3200,
   },
-  proxy: {
-    '/apps.tcdg': 'http://wxqd.cpcxc.com/',
-  },
+  proxy: [
+    `http://localhost:7002${url_prefix}/api/system/dict`,
+    `http://localhost:7001${url_prefix}/api/system`,
+  ],
   loader: [
     {
       test: /\.less$/,
@@ -75,16 +84,17 @@ module.exports = {
     ** Build configuration 
     */
   build: {
-    publicPath: '/school/_nuxt/',
-    vendor:['axios', 'element-ui', 'babel-polyfill'],
-    babel:{
-        "plugins":[
-            ['component',{
-                "libraryName":"element-ui",
-                "styleLibraryName":"theme-chalk"
-            }]
-        ]
-    },    /*
+    publicPath: `${url_prefix}/_nuxt/`,
+    vendor: ['axios', 'element-ui', 'babel-polyfill'],
+    babel: {
+      "plugins": [
+        ['component', {
+          "libraryName": "element-ui",
+          "styleLibraryName": "theme-chalk"
+        }]
+      ]
+    },    
+    /*
     ** Run ESLint on save
     */
     extend(config, { isDev }) {
@@ -104,17 +114,21 @@ module.exports = {
     }
   },
   router: {
-    base: '/school/',
-    routes: [
-      { path: '/system/contacts', meta: {mymeta: 'hello,meta'}}
-    ]
-    // middleware: ['meta'],
-    // extendRoutes (routes, resolve) {
-    //   let ret= routes.map(p=>({...p, meta: RouteMeta(p.path)}));
-    //   console.log(ret);
-    //   return ret;
-    // }
-  },  
+    base: `${url_prefix}/`,
+    extendRoutes(routes) {
+      // let ret= routes.map(p=>({...p, meta: RouteMeta(p.path)}));
+      // console.log(ret);
+      // return ret;
+
+      // TODO: 重定向默认地址到'/system'
+      let index = routes.findIndex(p => p.path === '/');
+      if (index != -1)
+        routes[index] = { path: '/', redirect: '/system' };
+      else
+        routes.push({ path: '/', redirect: '/system' });
+    }
+  },
+  // middleware: ['meta'],
   // serverMiddleware: [
   //   // API middleware
   //   './server/index.js'

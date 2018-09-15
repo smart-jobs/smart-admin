@@ -8,12 +8,9 @@
       <p class="desc">{{description}}</p>
     </div>
     <el-form class="main" :model="loginForm" :rules="rules" ref="loginForm">
-      <el-form-item prop="school">
-        <el-input v-model="loginForm.school" placeholder="院校代码" prefix-icon="naf-icons naf-icon-corp">
-        </el-input>
-      </el-form-item>
       <el-form-item prop="username">
         <el-input v-model="loginForm.username" placeholder="用户名" prefix-icon="naf-icons naf-icon-user">
+          <span>dsfsf</span>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
@@ -41,14 +38,10 @@ export default {
   data() {
     return {
       loginForm: {
-        school: '',
         username: '',
         password: ''
       },
       rules: {
-        school: [
-          { required: true, message: '请输入院校代码', trigger: 'blur' }
-        ],
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
@@ -79,7 +72,7 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           const res = await this.login({
-            username: this.loginForm.username,
+            username: this.loginForm.username || 'admin',
             password: this.loginForm.password
           });
           // console.log(res);
@@ -90,12 +83,7 @@ export default {
               duration: 1000
             });
             this.$router.push(this.$route.query.redirect || '/');
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.errmsg
-            });
-          }
+          } 
         } else {
           this.$notify.error({
             title: '错误',
