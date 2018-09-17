@@ -66,10 +66,10 @@ module.exports = {
     port: 3100,
   },
   proxy: [
-    `http://localhost:7002${url_prefix}/api/system/dict`,
-    `http://localhost:7001${url_prefix}/api/system`,
-    `http://localhost:7002${url_prefix}/api/naf/dict`,
-    `http://localhost:7001${url_prefix}/api/naf`,
+    `http://localhost:8002${url_prefix}/api/system/dict`,
+    `http://localhost:8001${url_prefix}/api/system`,
+    `http://localhost:8002${url_prefix}/api/naf/dict`,
+    `http://localhost:8001${url_prefix}/api/naf`,
   ],
   loader: [
     {
