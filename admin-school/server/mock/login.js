@@ -12,7 +12,7 @@ const router = Router()
 /* GET users listing. */
 router.post('/login', function (req, res, next) {
 
-  axios.post(`http://localhost:3200/api/naf/login`, req.body)
+  axios.post(`http://localhost:3200/school/api/naf/login`, req.body)
     .then((response) => {
       // console.log(response);
       if(response.status === 200){
