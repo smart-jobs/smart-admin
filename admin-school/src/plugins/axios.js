@@ -46,4 +46,7 @@ export default function ({ $axios, redirect, app }) {
       redirect('/login')
     }
   })
+
+  $axios.defaults.headers.common['x-tenant'] = 'demo';
+
 }

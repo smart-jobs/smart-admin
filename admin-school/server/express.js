@@ -21,8 +21,8 @@ app.use(session({
 }))
 
 // Import API Routes
-app.use('/school/', require('./mock/login'))
-app.use('/school/', require('./mock/menu'))
+app.use('/api/', require('./mock/login'))
+app.use('/api/', require('./mock/menu'))
 
 // We instantiate Nuxt.js with the options
 config.isProd = process.env.NODE_ENV === 'production';

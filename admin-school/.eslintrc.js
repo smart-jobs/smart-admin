@@ -31,6 +31,7 @@ module.exports = {
         'e', // for e.returnvalue
         'Vue', // for Vue
         'routes',
+        '$axios',
       ]
     }],
     // allow debugger during development

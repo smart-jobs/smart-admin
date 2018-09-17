@@ -9,7 +9,7 @@ const app = require('express')()
 let config = require('../nuxt.config.js')
 
 // Body parser, to access `req.body`
-app.use('/master/api/login', bodyParser.json())
+app.use('/api/login', bodyParser.json())
 app.use(cookieParser());
 
 // Sessions to create `req.session`
@@ -21,8 +21,8 @@ app.use(session({
 }))
 
 // Import API Routes
-app.use('/master/', require('./mock/login'))
-app.use('/master/', require('./mock/menu'))
+app.use('/api/', require('./mock/login'))
+app.use('/api/', require('./mock/menu'))
 
 // We instantiate Nuxt.js with the options
 config.isProd = process.env.NODE_ENV === 'production';

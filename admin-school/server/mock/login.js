@@ -10,9 +10,9 @@ const router = Router()
 // ]
 
 /* GET users listing. */
-router.post('/api/login', function (req, res, next) {
+router.post('/login', function (req, res, next) {
 
-  axios.post(`http://localhost:3200${req.baseUrl}/api/naf/login`, req.body)
+  axios.post(`http://localhost:3200/api/naf/login`, req.body)
     .then((response) => {
       // console.log(response);
       if(response.status === 200){
@@ -36,12 +36,12 @@ router.post('/api/login', function (req, res, next) {
 })
 
 /* GET user by ID. */
-router.post('/api/logout', function (req, res, next) {
+router.post('/logout', function (req, res, next) {
   delete req.session.authUser
   res.json({ errcode: 0, errmsg: 'ok' })
 })
 
-router.get('/api/userinfo', function (req, res) {
+router.get('/userinfo', function (req, res) {
   if (req.session && req.session.authUser) {
     return res.json({ errcode: 0, errmsg: 'ok', userinfo: req.session.authUser })
   }

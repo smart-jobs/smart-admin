@@ -1,4 +1,3 @@
-// import auth from '@/api/auth';
 import * as types from '@/constants/mutation-types';
 // initial state
 // shape: [{ id, quantity }]

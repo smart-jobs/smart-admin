@@ -1,6 +1,6 @@
 <template>
   <div class="lite">
-    <data-grid :data="items" :meta="fields" :operation="operation" @open="handleOpen" @reply="handleReply">
+    <data-grid :data="items" :action="true" :meta="fields" :operation="operation" @open="handleOpen" @reply="handleReply">
     </data-grid>
   </div>
 </template>
@@ -32,13 +32,12 @@ export default {
         { name: 'hasReceipt', label: '是否回执' },
         { name: 'createUser', label: '发文用户' },
         { name: 'createDate', label: '创建时间' },
-        { name: 'status', label: '状态' },
         // { name: 'receiveUnit', label: '接收单位' },
         // { name: 'attachment', label: '附件' },
         // { name: 'receiptFields', label: '回执字段' },
       ],
       operation: [
-        ['open', '打开'],
+        ['open', '签收'],
         ['reply', '回复'],
       ] /* 操作类型 */
     };

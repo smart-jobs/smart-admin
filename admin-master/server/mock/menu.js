@@ -277,10 +277,10 @@ const menus = datas.map(MapMenu());
 const modules = navDatas.map(MapMenu());
 
 /* GET menus define. */
-router.get('/api/menu/load', function (req, res, next) {
+router.get('/menu/load', function (req, res, next) {
   res.json({errcode: 0, errmsg: 'ok', data: {items: menus, modules}})
 })
-router.get('/api/menu/:module', function (req, res, next) {
+router.get('/menu/:module', function (req, res, next) {
   const module = req.params.module;
   const items = menus.filter(p=>p.options.module == module);
   res.json({errcode: 0, errmsg: 'ok', data: {items, modules}})
