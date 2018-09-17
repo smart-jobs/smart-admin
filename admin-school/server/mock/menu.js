@@ -19,6 +19,11 @@ const navDatas = [
     module: 'cms',
   },
   {
+    title: '公文系统',
+    path: '/docflow',
+    module: 'docflow',
+  },
+  {
     title: '友情链接',
     module: 'links',
     children: [
@@ -64,11 +69,6 @@ const datas = [
     icon: 'system',
     module: 'system',
     children: [
-      /*{
-        title: '通讯录',
-        path: '/system/contacts',
-        icon: 'account ',
-      },*/
       {
         title: '用户管理',
         path: '/system/user',
@@ -80,24 +80,9 @@ const datas = [
         icon: 'dept',
       },
       {
-        title: '标签管理',
+        title: '标签用户',
         path: '/system/tag',
         icon: 'tag',
-      },
-      {
-        title: '字典管理',
-        path: '/system/dict',
-        icon: 'dict',
-      },
-      {
-        title: '证书管理',
-        path: '/system/cert',
-        icon: 'cert',
-      },
-      {
-        title: '分站管理',
-        path: '/system/site',
-        icon: 'site',
       },
       {
         title: '操作日志',
@@ -177,6 +162,29 @@ const datas = [
       {
         title: '新闻栏目',
         path: '/cms/news',
+        icon: 'column',
+      },
+    ],
+  },
+  {
+    title: '收文管理',
+    path: '/docflow',
+    icon: 'news',
+    module: 'docflow',
+    children: [
+      {
+        title: '未读公文',
+        path: '/docflow/inbox',
+        icon: 'caogao',
+      },
+      {
+        title: '在办公文',
+        path: '/docflow/inbox',
+        icon: 'doc1',
+      },
+      {
+        title: '归档公文',
+        path: '/docflow/archive',
         icon: 'column',
       },
     ],
