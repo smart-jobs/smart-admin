@@ -145,8 +145,22 @@ export default {
       this.$checkRes(res, '删除数据成功');
     },
     async handleDeleteCatg(data) {
-      const res = await this.deleteCatg(data);
-      this.$checkRes(res, '删除字典分类成功');
+      try {
+        await this.$confirm(`是否删除字典分类?`, '请确认', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        });
+        const res = await this.deleteCatg(data);
+        this.$checkRes(res, '删除字典分类成功');
+      } catch (err) {
+        if (err == 'cancel') {
+          this.$message({
+            type: 'info',
+            message: `已取消删除`
+          });
+        }
+      }
     },
     handleNavCmd(cmd, data) {
       console.debug('nav command:', cmd, data);

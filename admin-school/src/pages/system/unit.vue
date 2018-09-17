@@ -2,20 +2,20 @@
   <div class="mixed">
     <el-card class="left">
       <div slot="header" class="top">
-        <span>标签</span>
+        <span>省内高校</span>
         <el-button icon="el-icon-plus" style="float: right; padding: 3px 0" type="text" @click="handleNew"> </el-button>
       </div>
-      <el-tree :data="treeData" :props="{label: 'tagname'}" @node-click="selectTag" :render-content="renderNavNode" :highlight-current="true"></el-tree>
+      <el-tree :data="treeData" :props="{label: 'unitname'}" @node-click="selectUnit" :render-content="renderNavNode" :highlight-current="true"></el-tree>
     </el-card>
     <el-card class="right list" size="mini" v-if="view == 'list'">
       <div slot="header" class="clearfix">
-        <span>{{(current && current.tagname) || '标签用户' }}</span>
+        <span>{{(current && current.unitname) || '单位管理员' }}</span>
         <el-button icon="el-icon-plus" style="float: right; padding: 3px 0" type="text" @click="handleNewItem" :disabled="!current">添加部门/成员</el-button>
       </div>
-      <data-grid :data="itemData" :filter="false" :meta="fields" @edit="handleEdit" @delete="handleDelete" >
+      <data-grid :data="units" :filter="false" :meta="fields" @edit="handleEdit" @delete="handleDelete" >
       </data-grid>
     </el-card>
-    <data-dlg :title="form.isNew?'添加标签':'修改标签'" width="400px" v-if="showForm" :visible.sync="showForm" :data="form.data" :is-new="form.isNew" :options="{'label-width':'80px', size: 'mini'}" :meta="tagFields" @save="handleSave" @cancel="showForm = false">
+    <data-dlg :title="form.isNew?'添加单位':'修改单位'" width="400px" v-if="showForm" :visible.sync="showForm" :data="form.data" :is-new="form.isNew" :options="{'label-width':'80px', size: 'mini'}" :meta="unitFields" @save="handleSave" @cancel="showForm = false">
     </data-dlg>
   </div>
 </template>
@@ -26,7 +26,7 @@ import DataGrid from '@/naf/data/lite-grid';
 import { createNamespacedHelpers } from 'vuex';
 
 const { mapState, mapActions } = createNamespacedHelpers(
-  'system/tag'
+  'system/unit'
 );
 
 export default {
@@ -51,34 +51,22 @@ export default {
         { name: 'name', label: '名称', required: true },
         { name: 'dept', label: '部门', readonly: true },
       ],
-      tagFields: [
-        { name: 'tagid', label: 'ID', readonly: true },
-        { name: 'tagname', label: '标签', required: true }
+      unitFields: [
+        { name: 'unitid', label: '院校代码', required: true, editable: true },
+        { name: 'unitname', label: '院校名称', required: true },
+        { name: 'createUser', label: '默认用户', editable: true, formOpts: { inputType: 'checkbox', placeholder: '自动创建默认管理员'} }
       ],
       filter: undefined,
     };
   },
   computed: {
-    ...mapState(['current', 'tags', 'items']),
+    ...mapState(['current', 'units', 'users']),
     treeData() {
-      return this.tags.map(p=>({...p,id: p._id}));
+      return this.units.map(p=>({...p,id: p._id}));
     },
-    itemData() {
-      if(this.filter){
-        return this.items.filter(p=>{
-          for(const key in this.filter){
-            if(p[key] !== this.filter[key]){
-              return false;
-            }
-          }
-          return true;
-        });
-      }
-      return this.items;
-    }
   },
   methods: {
-    ...mapActions(['load', 'create', 'delete', 'update', , 'selectTag']),
+    ...mapActions(['load', 'create', 'delete', 'update', , 'selectUnit']),
     handleEdit(data) {
       this.form = { data, isNew: false };
       this.showForm = true;
@@ -95,10 +83,10 @@ export default {
       let res, msg;
       if (payload.isNew) {
         res = await this.create(payload.data);
-        msg = '标签添加成功';
+        msg = '添加数据成功';
       } else {
         res = await this.update(payload.data);
-        msg = '标签修改成功';
+        msg = '修改数据成功';
       }
       if (this.$checkRes(res, msg)) {
         this.showForm = false;
@@ -106,7 +94,7 @@ export default {
     },
     async handleDelete(data) {
       try {
-        await this.$confirm(`删除标签后，标签和用户的关联信息也将删除，是否删除该标签?`, '请确认', {
+        await this.$confirm(`删除单位后，该单位相关数据无法进行管理，是否删除该单位?`, '请确认', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -151,7 +139,7 @@ export default {
               <el-dropdown-item command="edit">修改名称</el-dropdown-item>
               <el-dropdown-item command="delete">删除</el-dropdown-item>
               <el-dropdown-item divided disabled>
-                标签ID: {data.tagid}
+                ID: {data.unitid}
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>

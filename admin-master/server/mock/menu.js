@@ -19,6 +19,11 @@ const navDatas = [
     module: 'cms',
   },
   {
+    title: '公文系统',
+    path: '/docflow',
+    module: 'docflow',
+  },
+  {
     title: '友情链接',
     module: 'links',
     children: [
@@ -85,15 +90,20 @@ const datas = [
         icon: 'tag',
       },
       {
+        title: '单位管理',
+        path: '/system/unit',
+        icon: 'corp',
+      },
+      {
         title: '字典管理',
         path: '/system/dict',
         icon: 'dict',
       },
-      {
-        title: '证书管理',
-        path: '/system/cert',
-        icon: 'cert',
-      },
+      // {
+      //   title: '证书管理',
+      //   path: '/system/cert',
+      //   icon: 'cert',
+      // },
       {
         title: '分站管理',
         path: '/system/site',
@@ -178,6 +188,34 @@ const datas = [
         title: '新闻栏目',
         path: '/cms/news',
         icon: 'column',
+      },
+    ],
+  },
+  {
+    title: '发文管理',
+    path: '/docflow',
+    icon: 'news',
+    module: 'docflow',
+    children: [
+      {
+        title: '我要发文',
+        path: '/docflow/draft',
+        icon: 'caogao',
+      },
+      {
+        title: '在办公文',
+        path: '/docflow/outbox',
+        icon: 'doc1',
+      },
+      {
+        title: '已办公文',
+        path: '/docflow/archive',
+        icon: 'column',
+      },
+      {
+        title: '公文回执',
+        path: '/docflow/receipt',
+        icon: 'text',
       },
     ],
   },

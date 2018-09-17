@@ -12,7 +12,7 @@
         </div>
       </slot>
       <slot name="action" v-if="action">
-        <el-button icon="el-icon-plus" type="primary" size="mini" v-if="!readonly">添加</el-button>
+        <el-button icon="el-icon-plus" type="primary" size="mini" v-if="!readonly" @click="$emit('add-new')">添加</el-button>
       </slot>
     </el-header>
     <el-main class="table-area">

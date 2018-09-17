@@ -2,9 +2,9 @@
   <div class="mixed">
     <el-card class="left">
       <div slot="header" class="top">
-        <span>{{productName}}</span>
+        <span>{{rootName}}</span>
         <el-tooltip content="取消选择">
-        <i class="naf-icons naf-icon-clearup" style="float: right; padding: 3px 0" @click="resetCurrent()"/>
+          <i class="naf-icons naf-icon-clearup" style="float: right; padding: 3px 0" @click="resetCurrent()" />
         </el-tooltip>
         <!-- <el-button icon="el-icon-edit" style="float: right; padding: 3px 0" type="text" @click="setCurrent()"> </el-button> -->
       </div>
@@ -36,7 +36,7 @@ import { createNamespacedHelpers } from 'vuex';
 import config from '@/config';
 import * as types from '@/store/system/.dept';
 
-const { productName } = config;
+const { rootName } = config;
 
 const { mapState, mapActions, mapMutations } = createNamespacedHelpers(
   'system/dept'
@@ -53,7 +53,7 @@ export default {
   },
   data() {
     return {
-      productName,
+      rootName,
       view: 'list',
       form: {},
       rules: {
@@ -95,13 +95,27 @@ export default {
       } else {
         res = await this.update(payload.data);
       }
-      if(this.$checkRes(res, '数据保存成功')){
+      if (this.$checkRes(res, '数据保存成功')) {
         this.view = 'list';
       }
     },
     async handleDelete(data) {
-      const res = await this.delete(data);
-      this.$checkRes(res, '删除数据成功');
+      try {
+        await this.$confirm(`是否删除此部门?`, '请确认', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        });
+        const res = await this.delete(data);
+        this.$checkRes(res, '删除数据成功');
+      } catch (err) {
+        if (err == 'cancel') {
+          this.$message({
+            type: 'info',
+            message: `已取消删除`
+          });
+        }
+      }
     }
   },
   computed: {

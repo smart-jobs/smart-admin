@@ -2,7 +2,7 @@ import * as types from './.dict.js';
 import assert from 'assert';
 
 const api = {
-  listItem: (catg) => `/system/dict/code/${catg}/list`,
+  listItem: (catg) => `/naf/code/${catg}/list`,
 }
 
 // initial state

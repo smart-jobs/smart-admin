@@ -50,8 +50,6 @@ export const actions = {
     const { userid, newpass } = payload;
     assert(userid&&newpass);
     const res = await this.$axios.$post(`${api.passwd}?userid=${userid}`, {newpass});
-    if(res.errcode === 0)
-      commit(types.UPDATED, res.data);
     return res;
   },
 };

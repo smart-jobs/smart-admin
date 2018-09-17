@@ -2,7 +2,7 @@
   <div class="mixed">
     <el-card class="left">
       <div slot="header" class="top">
-        <span>{{productName}}</span>
+        <span>{{rootName}}</span>
         <el-tooltip content="取消选择">
           <i class="naf-icons naf-icon-clearup" style="float: right; padding: 3px 0" @click="resetCurrent()" />
         </el-tooltip>
@@ -44,7 +44,7 @@ import { createNamespacedHelpers } from 'vuex';
 import config from '@/config';
 import * as types from '@/store/system/.dept';
 
-const { productName } = config;
+const { rootName } = config;
 
 const { mapState, mapActions, mapMutations } = createNamespacedHelpers(
   'system/user'
@@ -85,7 +85,7 @@ export default {
       }
     };
     return {
-      productName,
+      rootName,
       view: 'list',
       form: {},
       passwdForm: {},

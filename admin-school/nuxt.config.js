@@ -1,13 +1,3 @@
-// const path = require("path");
-// const menus = require('./src/config/menus').routes;
-
-// const resolve = (dir) => {
-//   return path.join(__dirname, '..', dir)
-// }
-// const RouteMeta = (path) => {
-//   const menu = menus.find(p=>p.path==path);
-//   return (menu && menu.meta) || {};
-// }
 
 const url_prefix = `/school`;
 
@@ -128,9 +118,4 @@ module.exports = {
         routes.push({ path: '/', redirect: '/system' });
     }
   },
-  // middleware: ['meta'],
-  // serverMiddleware: [
-  //   // API middleware
-  //   './server/index.js'
-  // ]
 }

@@ -1,13 +1,3 @@
-// const path = require("path");
-// const menus = require('./src/config/menus').routes;
-
-// const resolve = (dir) => {
-//   return path.join(__dirname, '..', dir)
-// }
-// const RouteMeta = (path) => {
-//   const menu = menus.find(p=>p.path==path);
-//   return (menu && menu.meta) || {};
-// }
 
 const url_prefix = `/master`;
 
@@ -57,7 +47,12 @@ module.exports = {
   */
   modules: [
     // Doc: https://github.com/nuxt-community/axios-module#usage
-    ['@nuxtjs/proxy', { pathRewrite: { '.*/api/system/dict' : '/', '.*/api/system' : '/' } }],
+    ['@nuxtjs/proxy', { 
+      pathRewrite: {
+        '.*/api/system/dict': '/', '.*/api/system': '/',
+        '.*/api/naf/code': '/api', '.*/api/naf': '/api',
+      }
+    }],
     '@nuxtjs/axios',
     // '~/modules/router-meta'
   ],
@@ -73,7 +68,9 @@ module.exports = {
   proxy: [
     `http://localhost:7002${url_prefix}/api/system/dict`,
     `http://localhost:7001${url_prefix}/api/system`,
-  ],
+    `http://localhost:7002${url_prefix}/api/naf/dict`,
+    `http://localhost:7001${url_prefix}/api/naf`,
+],
   loader: [
     {
       test: /\.less$/,
@@ -116,9 +113,6 @@ module.exports = {
   router: {
     base: `${url_prefix}/`,
     extendRoutes(routes) {
-      // let ret= routes.map(p=>({...p, meta: RouteMeta(p.path)}));
-      // console.log(ret);
-      // return ret;
 
       // TODO: 重定向默认地址到'/system'
       let index = routes.findIndex(p => p.path === '/');
@@ -128,9 +122,4 @@ module.exports = {
         routes.push({ path: '/', redirect: '/system' });
     }
   },
-  // middleware: ['meta'],
-  // serverMiddleware: [
-  //   // API middleware
-  //   './server/index.js'
-  // ]
 }
