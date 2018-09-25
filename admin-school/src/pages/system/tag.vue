@@ -92,7 +92,7 @@ export default {
       this.showForm = true;
     },
     handleNewItem() {
-      this.$message('功能暂未实现...');
+      this.$message('功能暂未开放...');
     },
     async handleSave(payload) {
       let res, msg;
