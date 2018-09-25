@@ -17,12 +17,15 @@
     </el-card>
     <data-dlg :title="form.isNew?'添加标签':'修改标签'" width="400px" v-if="showForm" :visible.sync="showForm" :data="form.data" :is-new="form.isNew" :options="{'label-width':'80px', size: 'mini'}" :meta="tagFields" @save="handleSave" @cancel="showForm = false">
     </data-dlg>
+    <user-select title="添加成员/部门到标签" width="400px" v-if="showSelect" :visible.sync="showSelect" @cancel="showSelect = false">
+    </user-select>
   </div>
 </template>
 <script>
 import DataForm from '@/naf/data/form';
 import DataDlg from '@/naf/data/form-dlg';
 import DataGrid from '@/naf/data/lite-grid';
+import UserSelect from '@/naf/user/user-select';
 import { createNamespacedHelpers } from 'vuex';
 
 const { mapState, mapActions } = createNamespacedHelpers(
@@ -34,10 +37,13 @@ export default {
     DataForm,
     DataDlg,
     DataGrid,
+    UserSelect,
   },
   async fetch({store}) {
     // 加载字典数据
     // await store.dispatch('naf/dict/load', 'usage');
+    await store.dispatch('system/user/load');
+    await store.dispatch('system/dept/load');
   },
   mounted() {
     this.load();
@@ -46,6 +52,7 @@ export default {
     return {
       view: 'list',
       showForm: false,
+      showSelect: false,
       form: {},
       fields: [
         { name: 'name', label: '名称', required: true },
@@ -92,7 +99,8 @@ export default {
       this.showForm = true;
     },
     handleNewItem() {
-      this.$message('功能暂未开放...');
+      // this.$message('功能暂未开放...');
+      this.showSelect = true;
     },
     async handleSave(payload) {
       let res, msg;
