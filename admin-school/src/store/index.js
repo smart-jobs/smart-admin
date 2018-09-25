@@ -14,8 +14,6 @@ export const actions = {
       commit('login/' + types.USER_INFO, req.session.authUser);
       commit('login/' + types.LOGIN_SUCCESS);
       commit('login/' + types.SELECT_UNIT, req.session.unitcode);
-      console.log("common['x-tenant']", app.$axios.defaults.headers.common['x-tenant']);
-      app.$axios.defaults.headers.common['x-tenant'] = req.session.unitcode;
     }
 
     console.log('x-tenant:', req.header('x-tenant'));
