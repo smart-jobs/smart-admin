@@ -34,7 +34,7 @@ const { /* mapState, */ mapActions } = createNamespacedHelpers('login');
 // import {login, getAdminInfo} from '@/api/getData'
 // import {mapActions, mapState} from 'vuex'
 export default {
-  layout: 'login',
+  layout: 'footed',
   data() {
     return {
       loginForm: {

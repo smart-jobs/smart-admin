@@ -18,7 +18,7 @@ const Plugin = {
         throw new Error("can't find store for naf dict");
       }
       if(_.isString(code)) {
-        return state.codes[category][code];
+        return (state.codes[category] && state.codes[category][code]) || code;
       } else {
         return state.items[category];
       }

@@ -60,6 +60,10 @@ export default {
     DataGrid,
     DeptTree
   },
+  async fetch({store}) {
+    // 加载字典数据
+    await store.dispatch('naf/dict/load', 'status');
+  },
   mounted() {
     this.loadDept();
     this.load();

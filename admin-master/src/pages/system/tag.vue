@@ -3,7 +3,7 @@
     <el-card class="left">
       <div slot="header" class="top">
         <span>标签</span>
-        <el-button icon="el-icon-plus" style="float: right; padding: 3px 0" type="text" @click="handleNew"> </el-button>
+        <el-button icon="el-icon-plus" style="float: right; padding: 3px 0" type="text" @click="handleNew" v-if="editable"> </el-button>
       </div>
       <el-tree :data="treeData" :props="{label: 'tagname'}" @node-click="selectTag" :render-content="renderNavNode" :highlight-current="true"></el-tree>
     </el-card>
@@ -75,6 +75,9 @@ export default {
         });
       }
       return this.items;
+    },
+    editable() {
+      return this.$store.state.platform === 'master';
     }
   },
   methods: {
@@ -138,13 +141,14 @@ export default {
       const handleCommand = (cmd) => {
         this.handleNavCmd(cmd, data);
       }
+      const editable = this.editable;
       return (
         <span style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;">
           <span>
             <span>{node.label}</span>
           </span>
-          <el-dropdown class="nav-btn" trigger="click" size="mini" on-command={handleCommand}>
-            <span class="el-dropdown-link" on-click={clickHandler}>
+          <el-dropdown class="nav-btn" trigger="click" size="mini" on-command={handleCommand} >
+            <span class="el-dropdown-link" on-click={clickHandler} v-show={editable}>
               <i class="naf-icons naf-icon-dian" />
             </span>
             <el-dropdown-menu class="action-menu" slot="dropdown">

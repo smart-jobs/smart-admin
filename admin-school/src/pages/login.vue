@@ -6,11 +6,14 @@
         <span class="title">{{productName}}</span>
       </div>
       <p class="desc">{{description}}</p>
+
     </div>
     <el-form class="main" :model="loginForm" :rules="rules" ref="loginForm">
       <el-form-item prop="username">
         <el-input v-model="loginForm.username" placeholder="用户名" prefix-icon="naf-icons naf-icon-user">
-          <span>dsfsf</span>
+          <template slot="append">@
+            <nuxt-child/>
+          </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
@@ -29,12 +32,12 @@ import config from '@/config';
 
 const { productName, description } = config;
 
-const { /* mapState, */ mapActions } = createNamespacedHelpers('login');
+const { mapState, mapActions } = createNamespacedHelpers('login');
 
 // import {login, getAdminInfo} from '@/api/getData'
 // import {mapActions, mapState} from 'vuex'
 export default {
-  layout: 'login',
+  layout: 'footed',
   data() {
     return {
       loginForm: {
@@ -49,8 +52,12 @@ export default {
       },
       showLogin: false,
       productName,
-      description,
+      description
     };
+  },
+  async fetch({ store }) {
+    // 加载字典数据
+    await store.dispatch('naf/dict/load', 'unit');
   },
   mounted() {
     this.showLogin = true;
@@ -58,9 +65,9 @@ export default {
     // this.getAdminData()
     // }
   },
-  // computed: {
-  // ...mapState(['adminInfo']),
-  // },
+  computed: {
+    ...mapState(['unit'])
+  },
   methods: {
     ...mapActions(['login']),
     async submitForm(formName) {
@@ -69,6 +76,14 @@ export default {
       //   type: "success",
       //   message: "登录成功"
       // });
+      if (!this.unit) {
+        this.$notify.error({
+          title: '错误',
+          message: '请选择所在单位',
+          offset: 100
+        });
+        return;
+      }
       this.$refs[formName].validate(async valid => {
         if (valid) {
           const res = await this.login({
@@ -167,5 +182,4 @@ export default {
   margin-top: 12px;
   margin-bottom: 40px;
 }
-
 </style>

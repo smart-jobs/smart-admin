@@ -19,6 +19,7 @@ export const state = () => ({
 export const actions = {
   async load({ commit }, payload = {}) {
     const { department_id = 0, fetch_child = 1 } = payload;
+    console.log("this.$axios...common['x-tenant']", this.$axios.defaults.headers.common['x-tenant']);
     const res = await this.$axios.$get(`${api.list}?department_id=${department_id}&fetch_child=${fetch_child}`);
     if(res.errcode === 0) {
       commit(types.LOADED, res.userlist);

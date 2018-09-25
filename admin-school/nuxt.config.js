@@ -81,7 +81,7 @@ module.exports = {
     ** Build configuration 
     */
   build: {
-    publicPath: `${url_prefix}/_nuxt/`,
+    publicPath: `/_nuxt/`,
     vendor: ['axios', 'element-ui', 'babel-polyfill'],
     babel: {
       "plugins": [

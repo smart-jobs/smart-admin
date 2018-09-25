@@ -16,9 +16,14 @@ router.post('/login', function (req, res, next) {
     .then((response) => {
       // console.log(response);
       if(response.status === 200){
-        const user = response.data.userinfo;
-        req.session.authUser = user;
-        res.json({ errcode: 0, errmsg: 'ok', userinfo: user })
+        const ret = response.data;
+        if(ret.errcode === 0){
+          const user = ret.userinfo;
+          req.session.authUser = user;
+          res.json({ errcode: 0, errmsg: 'ok', userinfo: user })
+        } else {
+          res.json(ret);
+        }
       } else {
         console.error(`Http Code: ${response.status}`)
         res.json({ errcode: -1, errmsg: '登录失败' });

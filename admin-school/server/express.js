@@ -33,6 +33,6 @@ if (config.dev) {
   const builder = new Builder(nuxt)
   builder.build()
 }
-app.use(nuxt.render)
+app.use(nuxt.render);
 app.listen(3200)
 console.log('Server is listening on http://localhost:3200')
