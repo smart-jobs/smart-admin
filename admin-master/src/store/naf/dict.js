@@ -1,8 +1,10 @@
-import * as types from './.dict.js';
+// import * as types from './.dict.js';
+import { LOADED, PRESET } from './.dict.js';
 import assert from 'assert';
 
 const api = {
   listItem: (catg) => `/naf/code/${catg}/list`,
+  listUnit: '/naf/unit/list',
 }
 
 // initial state
@@ -40,9 +42,24 @@ export const actions = {
     if(state.items[payload]){
       return {errcode: 0, errmsg: 'loaded'};
     }
-    const res = await this.$axios.$get(`${api.listItem(payload)}`)
+
+    // LOAD PRESET DICT
+    if(PRESET[payload]) {
+      commit(LOADED, { category: payload, items: PRESET[payload] });
+      return { errcode: 0, errmsg: 'ok' };
+    }
+
+    let res;
+    if(payload === 'unit') {
+      // LOAD UNIT DICT
+      res = await this.$axios.$get(`${api.listUnit}`)
+    } else {
+      // LOAD COMMONS DICT
+      res = await this.$axios.$get(`${api.listItem(payload)}`)
+    }
+
     if (res.errcode === 0) {
-      commit(types.LOADED, { category: payload, items: res.data });
+      commit(LOADED, { category: payload, items: res.data });
     }
     return res;
   },
@@ -51,9 +68,9 @@ export const actions = {
 
 // mutations
 export const mutations = {
-  [types.LOADED](state, { category, items }) {
+  [LOADED](state, { category, items }) {
     state.items[category] = items;
-    state.datas[category] = items.reduce((acc, item)=>{
+    state.codes[category] = items.reduce((acc, item)=>{
       acc[item.code] = item.name;
       return acc;
     }, {});

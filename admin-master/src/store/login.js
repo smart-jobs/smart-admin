@@ -1,4 +1,3 @@
-// import auth from '@/api/auth';
 import * as types from '@/constants/mutation-types';
 // initial state
 // shape: [{ id, quantity }]
@@ -6,6 +5,7 @@ export const state = () => ({
   loading: false,
   isAuthenticated: false,
   userinfo: null,
+  unit: null,
 });
 
 // getters
@@ -15,12 +15,13 @@ export const getters = {
 
 // actions
 export const actions = {
-  async login({ commit, dispatch/* , state */ }, { username, password }) {
+  async login({ commit, dispatch , state }, { username, password }) {
     commit(types.SHOW_LOADING);
     try {
+      console.log('login unit: ', state.unit);
       // console.log(this.$axios);
       //let res = await auth.login({ username, password });
-      let res = await this.$axios.$post('/login', {username, password})
+      let res = await this.$axios.$post('/login', {username, password, unitcode: state.unit})
       console.log(res);
       if (res.errcode && res.errcode !== 0) {
         commit(types.LOGIN_FAILURE);
@@ -73,8 +74,10 @@ export const mutations = {
     state.isAuthenticated = false;
     state.userinfo = null;
   },
-
   [types.USER_INFO](state, payload) {
     state.userinfo = payload;
+  },
+  [types.SELECT_UNIT](state, payload) {
+    state.unit = payload;
   },
 };

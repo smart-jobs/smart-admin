@@ -13,7 +13,9 @@ export const actions = {
     if (req.session && req.session.authUser){
       commit('login/' + types.USER_INFO, req.session.authUser);
       commit('login/' + types.LOGIN_SUCCESS);
-      commit('login/' + types.SELECT_UNIT, req.session.unitcode);
+      if(state.platform === 'school') {
+        commit('login/' + types.SELECT_UNIT, req.session.unitcode);
+      }
     }
 
     console.log('x-tenant:', req.header('x-tenant'));
@@ -33,6 +35,7 @@ export const mutations = {
 }
 
 export const getters = {
+  platform: state => state.platform,
   isAuthenticated: state => state.login.isAuthenticated,
   userinfo: state => state.login.userinfo,
   unitcode: state => state.login.unit,

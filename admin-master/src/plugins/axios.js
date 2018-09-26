@@ -4,9 +4,13 @@ import Vue from 'vue';
 
 var vm = new Vue({})
 
-export default function ({ $axios, redirect, app }) {
+export default function ({ $axios, redirect, app, store }) {
   $axios.onRequest(config => {
     if (process.browser) {
+      const { isAuthenticated, unitcode, platform } = store.getters;
+      if ( isAuthenticated && platform === 'school') {
+        config.baseURL = `/${unitcode}/api`
+      }
       vm.$loading()
     }
   })
@@ -46,4 +50,7 @@ export default function ({ $axios, redirect, app }) {
       redirect('/login')
     }
   })
+
+  // $axios.defaults.headers.common['x-tenant'] = 'demo';
+
 }

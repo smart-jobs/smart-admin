@@ -1,6 +1,6 @@
 <template>
   <div class="mixed">
-    <el-card class="left">
+    <el-card class="left" v-show="view ==  'list'">
       <div slot="header" class="top">
         <span>字典分类</span>
         <el-button icon="el-icon-plus" style="float: right; padding: 3px 0" type="text" @click="handleNewCatg"> </el-button>

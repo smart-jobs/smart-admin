@@ -10,8 +10,28 @@ const api = {
 // initial state
 export const state = () => ({
   categories: [], // 字典分类
-  items: {},// 分项映射表
-  codes: {},// 代码映射表
+  items: {// 分项映射表
+    status: [
+      { code: '0', name: '正常' },
+      { code: '1', name: '挂起' },
+      { code: '2', name: '注销' },
+    ],
+    usage: [
+      { code: '0', name: '正常' },
+      { code: '1', name: '停用' },
+    ],
+  }, 
+  codes: {// 代码映射表
+    status: {
+      '0': '正常',
+      '1': '挂起',
+      '2': '注销',
+    },
+    usage: {
+      '0': '正常',
+      '1': '停用',
+    },
+  }, 
 });
 
 // actions

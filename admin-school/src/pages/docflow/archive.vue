@@ -1,6 +1,6 @@
 <template>
   <div class="lite">
-    <data-grid :data="items" :meta="fields" :operation="operation" @add-new="handleNew" @edit="handleEdit" @delete="handleDelete">
+    <data-grid :data="items" :action="true" :meta="fields" :operation="operation" @add-new="handleNew" @edit="handleEdit" @delete="handleDelete">
     </data-grid>
   </div>
 </template>

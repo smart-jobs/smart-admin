@@ -7,8 +7,8 @@ var vm = new Vue({})
 export default function ({ $axios, redirect, app, store }) {
   $axios.onRequest(config => {
     if (process.browser) {
-      const { isAuthenticated, unitcode } = store.getters;
-      if ( isAuthenticated ) {
+      const { isAuthenticated, unitcode, platform } = store.getters;
+      if ( isAuthenticated && platform === 'school') {
         config.baseURL = `/${unitcode}/api`
       }
       vm.$loading()
