@@ -82,7 +82,6 @@ module.exports = {
     */
   build: {
     publicPath: `/_nuxt/`,
-    vendor: ['axios', 'element-ui', 'babel-polyfill'],
     babel: {
       "plugins": [
         ['component', {

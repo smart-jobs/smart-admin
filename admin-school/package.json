@@ -29,7 +29,7 @@
     "js-cookie": "^2.2.0",
     "moment": "^2.22.2",
     "naf-core": "0.0.24",
-    "nuxt-edge": "latest"
+    "nuxt": "^2.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^9.0.0",
