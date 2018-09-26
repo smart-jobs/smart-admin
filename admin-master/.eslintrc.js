@@ -23,7 +23,7 @@ module.exports = {
     // disallow reassignment of function parameters
     // disallow parameter object manipulation except for specific exclusions
     'no-param-reassign': ['error', {
-      props: true,
+      props: false,
       ignorePropertyModificationsFor: [
         'state', // for vuex state
         'acc', // for reduce accumulators
@@ -31,6 +31,7 @@ module.exports = {
         'e', // for e.returnvalue
         'Vue', // for Vue
         'routes',
+        '$axios',
       ]
     }],
     // allow debugger during development
