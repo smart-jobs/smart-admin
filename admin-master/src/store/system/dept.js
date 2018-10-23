@@ -10,8 +10,23 @@ const api = {
 // shape: [{ id, quantity }]
 export const state = () => ({
   items: [], //所有数据
+  dict: {}, //组织机构树
   current: null,
 });
+
+const buildDict = (items = []) => {
+  const dict = {};
+  const root = items.filter(a=> !items.some(b=>b.id === a.parentid));
+  const fetchChildren = (item)=> {
+    if(!item.path) item.path = [item.name];
+    dict[item.id.toString()] = item;
+    const children = items.filter(p=> p.parentid === item.id)
+                          .forEach(p=> fetchChildren({...p, parent: item, path: item.path.concat(p.name)}));
+  };
+  root.forEach(p=> fetchChildren(p));
+  return dict;
+}
+
 
 // actions
 export const actions = {
@@ -50,19 +65,23 @@ export const actions = {
 export const mutations = {
   [types.LOADED](state, payload) {
     state.items = payload;
+    state.dict = buildDict(state.items);
   },
   [types.SELECTED](state, payload) {
     state.current = payload;
   },
   [types.CREATED](state, payload) {
     state.items.push(payload);
+    state.dict = buildDict(state.items);
   },
   [types.DELETED](state, payload) {
     const idx = state.items.findIndex(p=>p.id === payload.id);
     state.items.splice(idx, 1);
+    state.dict = buildDict(state.items);
   },
   [types.UPDATED](state, payload) {
     const idx = state.items.findIndex(p=>p.id === payload.id);
     state.items.splice(idx, 1, payload);
+    state.dict = buildDict(state.items);
   },
 };

@@ -1,5 +1,5 @@
 <template>
-  <div class="container" v-show="showLogin">
+  <div class="container">
     <div class="top">
       <div class="header">
         <img alt="" class="logo" src="~/assets/logo.svg" />
@@ -7,34 +7,43 @@
       </div>
       <p class="desc">{{description}}</p>
     </div>
-    <el-form class="main" :model="loginForm" :rules="rules" ref="loginForm">
-      <el-form-item prop="username">
-        <el-input v-model="loginForm.username" placeholder="用户名" prefix-icon="naf-icons naf-icon-user">
-          <span>dsfsf</span>
-        </el-input>
-      </el-form-item>
-      <el-form-item prop="password">
-        <el-input type="password" placeholder="密码" v-model="loginForm.password" prefix-icon="naf-icons naf-icon-password"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm('loginForm')" :style="{width: '100%'}">登录</el-button>
-      </el-form-item>
-    </el-form>
+    <div class="main">
+      <el-form :model="loginForm" :rules="rules" ref="loginForm">
+        <el-form-item prop="username">
+          <el-input v-model="loginForm.username" placeholder="用户名" prefix-icon="naf-icons naf-icon-user">
+            <span>dsfsf</span>
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input type="password" placeholder="密码" v-model="loginForm.password" prefix-icon="naf-icons naf-icon-password"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('loginForm')" :style="{width: '100%'}">登录</el-button>
+        </el-form-item>
+      </el-form>
+      <div class="qrcode">
+        <img :src="dataUrl">
+        <div>微信扫码登录</div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import Vue from 'vue'
 import { createNamespacedHelpers } from 'vuex';
 import config from '@/config';
+import QRCode from 'qrcode';
+import { Client } from '@stomp/stompjs/esm5/client';
 
 const { productName, description } = config;
 
-const { /* mapState, */ mapActions } = createNamespacedHelpers('login');
+const { mapState, mapActions } = createNamespacedHelpers('login');
 
 // import {login, getAdminInfo} from '@/api/getData'
 // import {mapActions, mapState} from 'vuex'
 export default {
-  layout: 'footed',
+  layout: 'footer',
   data() {
     return {
       loginForm: {
@@ -47,28 +56,27 @@ export default {
         ],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
       },
-      showLogin: false,
       productName,
       description,
+      dataUrl: null,
+      client: null,
     };
   },
-  mounted() {
-    this.showLogin = true;
+  async mounted() {
     // if (!this.adminInfo.id) {
     // this.getAdminData()
     // }
+    await this.initQrcode();
   },
-  // computed: {
-  // ...mapState(['adminInfo']),
-  // },
+  computed: {
+    ...mapState(['qrcode']),
+  },
   methods: {
-    ...mapActions(['login']),
+    ...mapActions({
+      login: 'login',
+      createQrcode: 'qrcode',
+    }),
     async submitForm(formName) {
-      // this.login({username:'admin',password:'pass'})
-      // this.$message({
-      //   type: "success",
-      //   message: "登录成功"
-      // });
       this.$refs[formName].validate(async valid => {
         if (valid) {
           const res = await this.login({
@@ -100,19 +108,41 @@ export default {
         }
         return true;
       });
+    },
+    async onMessage(message) {
+      console.log('receive a message: ', message.body);
+      if(message.body == 'scaned') {
+        try {
+          const res = await this.login({
+            qrcode: this.qrcode,
+          });
+          this.$checkRes(res, '扫码登录成功');
+          this.$router.push(this.$route.query.redirect || '/');
+        } catch (err) {
+          this.$message({
+            type: 'error',
+            message: err.message || '扫码登录失败',
+            duration: 1000
+          });
+          console.error(err);
+        }
+      }
+    },
+    async initQrcode() {
+      // 创建二维码
+      await this.createQrcode();
+      console.log('this.qrcode: ', this.qrcode);
+      let uri = `${Vue.config.weixin.baseUrl}/${this.qrcode}/login`;
+      if(uri.startsWith('/')) {
+        uri = `${location.protocol}://${location.host}${uri}`;
+      }
+      this.dataUrl = await QRCode.toDataURL(uri);
+      this.$stomp({
+        [`/exchange/qrcode.login/${this.qrcode}`]: this.onMessage,
+      });
     }
+
   }
-  // watch: {
-  // 	adminInfo: function (newValue){
-  // 		if (newValue.id) {
-  // 			this.$message({
-  //                     type: 'success',
-  //                     message: '检测到您之前登录过，将自动登录'
-  //                 });
-  // 			this.$router.push('manage')
-  // 		}
-  // 	}
-  // }
 };
 </script>
 
@@ -131,8 +161,25 @@ export default {
   position: relative;
 }
 .main {
-  width: 368px;
+  width: 440px;
   margin: 0 auto;
+  .el-form {
+    width: 260px;
+    float: left;
+  }
+  .qrcode {
+    width: 160px;
+    font-size: 12px;
+    color: darkgray;
+    text-align: center;
+    background: white;
+    float: right;
+    padding-bottom: 5px;
+    img {
+      width: 140px;
+      height: 140px;
+    }
+  }
 }
 .top {
   text-align: center;
@@ -167,5 +214,4 @@ export default {
   margin-top: 12px;
   margin-bottom: 40px;
 }
-
 </style>

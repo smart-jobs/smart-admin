@@ -4,25 +4,28 @@
 const { Nuxt, Builder } = require('nuxt')
 const bodyParser = require('body-parser')
 const session = require('express-session')
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const app = require('express')()
 let config = require('../nuxt.config.js')
 
+//enable trust proxy
+app.enable('trust proxy');
+
 // Body parser, to access `req.body`
-app.use('/master/api/login', bodyParser.json())
-app.use(cookieParser());
+// app.use('/master/api/login', bodyParser.json())
+// app.use(cookieParser());
 
 // Sessions to create `req.session`
 app.use(session({
   secret: 'super-secret-key',
   resave: true,
   saveUninitialized: false,
-  cookie: { maxAge: 600000 }
+  cookie: { maxAge: 3600000 }
 }))
 
 // Import API Routes
-app.use('/master/api/', require('./mock/login'))
-app.use('/master/api/', require('./mock/menu'))
+// app.use('/master/api/', require('./api/login'))
+app.use('/master/api/', require('./api/menu'))
 
 // We instantiate Nuxt.js with the options
 config.isProd = process.env.NODE_ENV === 'production';

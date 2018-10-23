@@ -27,7 +27,7 @@ export const FieldMeta = (meta) => {
 
   // 处理formatter
   let { formatter } = meta;
-  if (_.isObject(formatter) || _.isString(formatter) || _.isArray(formatter)) {
+  if (!_.isFunction(formatter) && (_.isObject(formatter) || _.isString(formatter) || _.isArray(formatter))) {
     let { name, param } = _.isObject(formatter) ? formatter : {};
     if (_.isString(formatter)) {
       [name, param] = formatter.split(':', 2);
@@ -85,7 +85,7 @@ const formatters = {
 export const Formatter = (meta, _this) => {
   // 处理formatter
   let { formatter } = meta;
-  if (_.isObject(formatter)) {
+  if (!_.isFunction(formatter) && _.isObject(formatter)) {
     const { name, param } = formatter;
     formatter = formatters[name](param);
     if (_this !== undefined) {
@@ -114,4 +114,5 @@ export const MergeFilters = (meta, _this) => {
     const filters = items.map(p=>({text: p.name, value: p.code}));
     return { filters, filterMethod, ...listOpts };
   }
+  return listOpts;
 }

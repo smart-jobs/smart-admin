@@ -36,7 +36,7 @@
     </div>
     <div slot="footer" class="dialog-footer">
       <el-button @click="$emit('cancel')" :size="options.size">取 消</el-button>
-      <el-button type="primary" @click="$emit('ok')" :size="options.size">确 定</el-button>
+      <el-button type="primary" @click="$emit('ok', selected)" :size="options.size">确 定</el-button>
     </div>
   </el-dialog>
 </template>

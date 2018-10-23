@@ -31,7 +31,9 @@ export default {
       const items = this.dataItems || [];
       const root = items.filter(a=> !items.some(b=>b.id === a.parentid));
       const fetchChildren = (item)=> {
-        const children = items.filter(p=> p.parentid === item.id).map(p=> fetchChildren(p));
+        if(!item.path) item.path = [item.name];
+        const children = items.filter(p=> p.parentid === item.id)
+                              .map(p=> fetchChildren({...p, parent: item, path: item.path.concat(p.name)}));
         return { ...item, children };
       };
       return root.map(p=> fetchChildren(p));

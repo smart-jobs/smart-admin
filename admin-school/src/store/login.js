@@ -48,7 +48,7 @@ export const actions = {
   async logout({ commit }) {
     // const res = await auth.fetch({ username });
     const res = await this.$axios.$post('/logout')
-    if (res.errcode && res.errcode === 0) {
+    if (res.errcode != undefined && res.errcode === 0) {
       commit(types.LOGOUT_SUCCESS);
     }
     return res;

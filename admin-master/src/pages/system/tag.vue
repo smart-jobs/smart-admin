@@ -12,12 +12,12 @@
         <span>{{(current && current.tagname) || '标签用户' }}</span>
         <el-button icon="el-icon-plus" style="float: right; padding: 3px 0" type="text" @click="handleNewItem" :disabled="!current">添加部门/成员</el-button>
       </div>
-      <data-grid :data="itemData" :filter="false" :meta="fields" @edit="handleEdit" @delete="handleDelete" >
+      <data-grid :data="items" :filter="false" :meta="fields" :operation="operation" @delete="handleDelItem" >
       </data-grid>
     </el-card>
     <data-dlg :title="form.isNew?'添加标签':'修改标签'" width="400px" v-if="showForm" :visible.sync="showForm" :data="form.data" :is-new="form.isNew" :options="{'label-width':'80px', size: 'mini'}" :meta="tagFields" @save="handleSave" @cancel="showForm = false">
     </data-dlg>
-    <user-select title="添加成员/部门到标签" width="400px" v-if="showSelect" :visible.sync="showSelect" @cancel="showSelect = false">
+    <user-select title="添加成员/部门到标签" width="400px" v-if="showSelect" :visible.sync="showSelect" @cancel="showSelect = false" @ok="handleAddItem">
     </user-select>
   </div>
 </template>
@@ -26,9 +26,9 @@ import DataForm from '@/naf/data/form';
 import DataDlg from '@/naf/data/form-dlg';
 import DataGrid from '@/naf/data/lite-grid';
 import UserSelect from '@/naf/user/user-select';
-import { createNamespacedHelpers } from 'vuex';
+import { mapState, createNamespacedHelpers } from 'vuex';
 
-const { mapState, mapActions } = createNamespacedHelpers(
+const { mapState: _mapState, mapActions } = createNamespacedHelpers(
   'system/tag'
 );
 
@@ -40,8 +40,7 @@ export default {
     UserSelect,
   },
   async fetch({store}) {
-    // 加载字典数据
-    // await store.dispatch('naf/dict/load', 'usage');
+    // 加载部门和用户数据
     await store.dispatch('system/user/load');
     await store.dispatch('system/dept/load');
   },
@@ -55,40 +54,37 @@ export default {
       showSelect: false,
       form: {},
       fields: [
-        { name: 'name', label: '名称', required: true },
-        { name: 'dept', label: '部门', readonly: true },
+        { name: 'name', label: '名称', required: true, listOpts: { width: 200 } },
+        { name: 'path', label: '所在部门', readonly: true, formatter: this.deptPath },
       ],
       tagFields: [
         { name: 'tagid', label: 'ID', readonly: true },
         { name: 'tagname', label: '标签', required: true }
       ],
+      operation: [
+        ['delete', '删除', 'el-icon-delete', true],
+      ] /* 操作类型 */,
       filter: undefined,
     };
   },
   computed: {
-    ...mapState(['current', 'tags', 'items']),
+    ..._mapState(['current', 'tags', 'userlist', 'partylist']),
+    ...mapState({
+      depts: state => state.system.dept.dict, 
+    }),
     treeData() {
       return this.tags.map(p=>({...p,id: p._id}));
     },
-    itemData() {
-      if(this.filter){
-        return this.items.filter(p=>{
-          for(const key in this.filter){
-            if(p[key] !== this.filter[key]){
-              return false;
-            }
-          }
-          return true;
-        });
-      }
-      return this.items;
-    },
     editable() {
       return this.$store.state.platform === 'master';
+    },
+    items() {
+      const items = [...this.partylist, ...this.userlist];
+      return items;
     }
   },
   methods: {
-    ...mapActions(['load', 'create', 'delete', 'update', , 'selectTag']),
+    ...mapActions(['load', 'create', 'delete', 'update', 'selectTag', 'addtagusers', 'deltagusers']),
     handleEdit(data) {
       this.form = { data, isNew: false };
       this.showForm = true;
@@ -99,8 +95,20 @@ export default {
       this.showForm = true;
     },
     handleNewItem() {
-      // this.$message('功能暂未开放...');
       this.showSelect = true;
+    },
+    deptPath(row, column, cellValue, index) {
+      let ids = [];
+      if(row.userid) {
+        ids = row.department || [];
+      } else {
+        ids = [ row.id ];
+      }
+      console.log(ids);
+      return ids.map(p=>String(p))
+                .map(p=> (this.depts[p] && this.depts[p].path) || [])
+                .map(p=>p.join(' / '))
+                .join(', ');
     },
     async handleSave(payload) {
       let res, msg;
@@ -132,6 +140,19 @@ export default {
           });
         }
       }
+    },
+    async handleAddItem(data) {
+      this.showSelect = false;
+      console.log(data);
+      const userlist = data.filter(p=>p.userid != undefined).map(p=>p.userid);
+      const partylist = data.filter(p=>p.userid == undefined).map(p=>p.id);
+      this.addtagusers({userlist, partylist});
+    },
+    async handleDelItem(data) {
+      const { userid, id } = data;
+      const userlist = [ userid ];
+      const partylist = [ id ];
+      this.deltagusers({userlist, partylist});
     },
     handleNavCmd(cmd, data) {
       console.debug('nav command:', cmd, data);

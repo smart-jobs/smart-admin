@@ -1,5 +1,5 @@
 
-const url_prefix = `/platform`;
+const url_prefix = `/master`;
 
 module.exports = {
   // mode: 'spa',
@@ -48,12 +48,6 @@ module.exports = {
   */
   modules: [
     // Doc: https://github.com/nuxt-community/axios-module#usage
-    ['@nuxtjs/proxy', { 
-      pathRewrite: {
-        '.*/api/system/dict': '/', '.*/api/system': '/',
-        '.*/api/naf/code': '/api', '.*/api/naf': '/api',
-      }
-    }],
     '@nuxtjs/axios', 
   ],
   /*
@@ -61,16 +55,9 @@ module.exports = {
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    proxy: true,
     prefix: `${url_prefix}/api`,
     port: 3100,
   },
-  proxy: [
-    `http://localhost:8002${url_prefix}/api/system/dict`,
-    `http://localhost:8001${url_prefix}/api/system`,
-    `http://localhost:8002${url_prefix}/api/naf/dict`,
-    `http://localhost:8001${url_prefix}/api/naf`,
-  ],
   loader: [
     {
       test: /\.less$/,
@@ -82,14 +69,6 @@ module.exports = {
     */
   build: {
     publicPath: '/_nuxt/',
-    babel: {
-      "plugins": [
-        ['component', {
-          "libraryName": "element-ui",
-          "styleLibraryName": "theme-chalk"
-        }]
-      ]
-    },    
     /*
     ** Run ESLint on save
     */
@@ -102,11 +81,6 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
-      // // 设置别名
-      // config.resolve.alias = {
-      //   ...(config.resolve.alias||{}),
-      //   '@': resolve('src'),
-      // }
     }
   },
   router: {
@@ -136,9 +110,10 @@ module.exports = {
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000
       },
-      weixin: {
-        baseUrl: `http://192.168.0.7:8000${url_prefix}/weixin`,
-      }
     }
   },
+  // serverMiddleware: [
+  //   'cookie-parser',
+  //   // '~/api/menu',
+  // ],
 }
