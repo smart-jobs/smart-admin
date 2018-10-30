@@ -134,7 +134,7 @@ export default {
       console.log('this.qrcode: ', this.qrcode);
       let uri = `${Vue.config.weixin.baseUrl}/${this.qrcode}/login`;
       if(uri.startsWith('/')) {
-        uri = `${location.protocol}://${location.host}${uri}`;
+        uri = `${location.protocol}//${location.host}${uri}`;
       }
       this.dataUrl = await QRCode.toDataURL(uri);
       this.$stomp({
