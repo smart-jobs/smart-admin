@@ -1,4 +1,6 @@
 import * as types from './.dict.js';
+import config from '@/utils/config.js';
+const { pageSize = 10 } = config;
 
 const api = {
   createCatg: '/system/dict/category/create',
@@ -16,6 +18,7 @@ export const state = () => ({
   categories: [], // 字典分类
   items: [], // 字典项
   category: null, // 当前字典分类
+  total: 0, // 字典项总数
 });
 
 // actions
@@ -29,8 +32,8 @@ export const actions = {
     return res;
   },
   async createCatg({ commit, state }, payload) {
-    const { code, name } = payload;
-    const res = await this.$axios.$post(`${api.createCatg}`, { code, name });
+    const { code, name, key } = payload;
+    const res = await this.$axios.$post(`${api.createCatg}`, { code, name, key });
     if(res.errcode === 0) {
       commit(types.CATG_CREATED, res.data);
     }
@@ -43,17 +46,19 @@ export const actions = {
     return res;
   },
   async updateCatg({ commit, state }, payload = {}) {
-    const { code, name, order } = payload;
-    const res = await this.$axios.$post(`${api.updateCatg}?code=${code}`, { name, order });
+    const { code, name, key, order } = payload;
+    const res = await this.$axios.$post(`${api.updateCatg}?code=${code}`, { name, key, order });
     if(res.errcode === 0)
       commit(types.CATG_UPDATED, res.data);
     return res;
   },
-  async loadItem({ commit }, payload = {}) {
-    const { category } = payload;
-    const res = await this.$axios.$get(`${api.listItem(category)}`)
+  async loadItem({ state, commit }, payload = {}) {
+    let { category, page = 1, size = pageSize } = payload;
+    if(!category) category = state.category.code;
+    const skip = Math.max(0, (page-1)*size);
+    const res = await this.$axios.$get(`${api.listItem(category)}?skip=${skip}&limit=${size}`)
     if(res.errcode === 0) {
-      commit(types.ITEM_LOADED, res.data);
+      commit(types.ITEM_LOADED, res);
     }
     return res;
   },
@@ -104,8 +109,9 @@ export const mutations = {
     const idx = state.categories.findIndex(p=>(p.code == payload.code));
     state.categories.splice(idx, 1, payload);
   },
-  [types.ITEM_LOADED](state, payload) {
-    state.items = payload;
+  [types.ITEM_LOADED](state, {data, total}) {
+    state.items = data;
+    state.total = total;
   },
   [types.ITEM_CREATED](state, payload) {
     state.items.push(payload);

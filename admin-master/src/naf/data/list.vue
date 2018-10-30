@@ -101,6 +101,11 @@ export default {
           });
         }
       }
+    },
+    resetPage() {
+      // TODO: 重置分页数据
+      this.page = 0;
+      this.size = 20;
     }
   },
   computed: {

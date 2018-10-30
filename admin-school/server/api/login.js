@@ -11,19 +11,21 @@ const router = Router()
 
 /* GET users listing. */
 router.post('/login', function (req, res, next) {
-  const { unitcode } = req.body;
-  console.log('unitcode:', unitcode);
 
-  axios.post(`http://localhost:3200/school/api/naf/login`, req.body, { headers: {'X-Tenant': unitcode},})
+  const host = (req.app.get('trust proxy') && req.header('X-Forwarded-Host')) || req.header('Host');
+  // console.log('Host: ', host); // => smart.localhost:8000
+  // console.log('req.baseUrl: ', req.baseUrl); // => /master/api
+
+  axios.post(`${req.protocol}://${host}${req.baseUrl}/naf/login`, req.body)
     .then((response) => {
       // console.log(response);
       if(response.status === 200){
         const ret = response.data;
         if(ret.errcode === 0){
-          const user = ret.userinfo;
-          req.session.authUser = user;
-          req.session.unitcode = unitcode;
-          res.json({ errcode: 0, errmsg: 'ok', userinfo: user })
+          const { userinfo, token } = ret;
+          req.session.authUser = userinfo;
+          req.session.access_token = token;
+          res.json({ errcode: 0, errmsg: 'ok', userinfo, token })
         } else {
           res.json(ret);
         }

@@ -1,5 +1,5 @@
 
-const url_prefix = `/school`;
+const url_prefix = `/platform`;
 
 module.exports = {
   // mode: 'spa',
@@ -40,7 +40,8 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/element-ui', '@/plugins/axios', '@/plugins/check-res', '@/plugins/naf-dict'
+    '@/plugins/element-ui', '@/plugins/axios', '@/plugins/check-res', '@/plugins/naf-dict',
+    { src: '@/plugins/stomp', ssr: false },
   ],
   /*
   ** Nuxt.js modules
@@ -53,8 +54,7 @@ module.exports = {
         '.*/api/naf/code': '/api', '.*/api/naf': '/api',
       }
     }],
-    '@nuxtjs/axios',
-    // '~/modules/router-meta'
+    '@nuxtjs/axios', 
   ],
   /*
   ** Axios module configuration
@@ -81,7 +81,7 @@ module.exports = {
     ** Build configuration 
     */
   build: {
-    publicPath: `/_nuxt/`,
+    publicPath: '/_nuxt/',
     babel: {
       "plugins": [
         ['component', {
@@ -112,9 +112,6 @@ module.exports = {
   router: {
     base: `${url_prefix}/`,
     extendRoutes(routes) {
-      // let ret= routes.map(p=>({...p, meta: RouteMeta(p.path)}));
-      // console.log(ret);
-      // return ret;
 
       // TODO: 重定向默认地址到'/system'
       let index = routes.findIndex(p => p.path === '/');
@@ -122,6 +119,26 @@ module.exports = {
         routes[index] = { path: '/', redirect: '/system' };
       else
         routes.push({ path: '/', redirect: '/system' });
+    }
+  },
+  vue: {
+    config: {
+      stomp: {
+        // brokerURL: 'ws://192.168.1.190:15674/ws',
+        brokerURL: '/ws', // ws://${location.host}/ws
+        connectHeaders: {
+          host: 'smart',
+          login: "web",
+          passcode: "web123"
+        },
+        // debug: true,
+        reconnectDelay: 5000,
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000
+      },
+      weixin: {
+        baseUrl: `http://192.168.0.7:8000${url_prefix}/weixin`,
+      }
     }
   },
 }

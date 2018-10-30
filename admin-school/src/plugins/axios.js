@@ -7,10 +7,12 @@ var vm = new Vue({})
 export default function ({ $axios, redirect, app, store }) {
   $axios.onRequest(config => {
     if (process.browser) {
-      const { isAuthenticated, unitcode, platform } = store.getters;
-      if ( isAuthenticated && platform === 'school') {
-        config.baseURL = `/${unitcode}/api`
-      }
+      const { isAuthenticated, unitcode, platform, access_token } = store.getters;
+      // $axios.setToken(access_token); // setToken得下一次请求是才能生效，所以放弃这种方法
+      config.headers['Authorization'] = access_token; // 设置config可以在本次请求生效
+      // if ( isAuthenticated && platform === 'school') {
+      //   config.baseURL = `/${unitcode}/api`
+      // }
       vm.$loading()
     }
   })

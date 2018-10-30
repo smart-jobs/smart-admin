@@ -5,14 +5,14 @@
         <span>字典分类</span>
         <el-button icon="el-icon-plus" style="float: right; padding: 3px 0" type="text" @click="handleNewCatg"> </el-button>
       </div>
-      <el-tree :data="treeData" :props="{label: 'name'}" @node-click="selectCatg" :render-content="renderNavNode" :highlight-current="true"></el-tree>
+      <el-tree :data="treeData" :props="{label: 'name'}" @node-click="handleSetCatg" :render-content="renderNavNode" :highlight-current="true"></el-tree>
     </el-card>
     <el-card class="right list" size="mini" v-if="view == 'list'">
       <div slot="header" class="clearfix">
         <span>{{(category && category.name) || '字典数据' }}</span>
         <el-button icon="el-icon-plus" style="float: right; padding: 3px 0" type="text" @click="handleNew" :disabled="!category">添加字典项</el-button>
       </div>
-      <data-grid :data="itemData" :filter="true" :meta="fields" @edit="handleEdit" @delete="handleDelete" @query="handleQuery">
+      <data-grid ref="dataGrid" :data="itemData" :filter="false" :paging="true" :total="total" :page-size="pageSize" :meta="fields" @edit="handleEdit" @delete="handleDelete" @query="handleQuery">
       </data-grid>
     </el-card>
     <el-card class="right details" size="mini" v-else>
@@ -31,10 +31,12 @@
 <script>
 import DataForm from '@/naf/data/form';
 import DataDlg from '@/naf/data/form-dlg';
-import DataGrid from '@/naf/data/lite-grid';
+import DataGrid from '@/naf/data/filter-grid';
 import DeptTree from '@/naf/user/dept-tree';
 import { createNamespacedHelpers } from 'vuex';
 import * as types from '@/store/system/.dict';
+import config from '@/utils/config.js';
+const { pageSize = 10 } = config;
 
 const { mapState, mapActions, mapMutations } = createNamespacedHelpers(
   'system/dict'
@@ -70,12 +72,13 @@ export default {
       catgFields: [
         { name: 'code', label: '代码', editable: false, required: true },
         { name: 'name', label: '名称', required: true },
+        { name: 'key', label: '别名', required: true , formOpts: { placeholder: '字典类别的别名，由字母数字组成' } },
       ],
       filter: undefined,
     };
   },
   computed: {
-    ...mapState(['category', 'categories', 'items']),
+    ...mapState(['category', 'categories', 'items', 'total']),
     treeData() {
       return this.categories.map(p=>({...p,id: p._id}));
     },
@@ -113,8 +116,14 @@ export default {
       this.catgForm = { data, isNew: false };
       this.catgDlg = true;
     },
-    handleQuery({filter}) {
+    handleSetCatg(data) {
+      this.selectCatg(data);
+      this.$refs['dataGrid'].resetPage();
+    },
+    handleQuery({filter, paging}) {
       this.filter = filter;
+      this.loadItem(paging);
+      this.currentPage = paging.page;
     },
     async handleSave(payload) {
       let res;
@@ -221,6 +230,11 @@ export default {
   }
   /deep/ .el-tree-node__content:hover .naf-icon-dian {
     display: inline;
+  }
+}
+.right.list {
+  /deep/ .el-card__body {
+    padding: 0;
   }
 }
 </style>

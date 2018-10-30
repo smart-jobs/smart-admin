@@ -47,12 +47,13 @@ export default {
     } /* 表格扩展属性 */,
     operation: Array,
     data: Array,
-    total: { type: Number, default: 0 } /* 总数据条数 */
+    total: { type: Number, default: 0 }, /* 总数据条数 */
+    pageSize: { type: Number, default: 10 }
   },
   data() {
     return {
       page: 1,
-      size: 20,
+      size: this.pageSize,
       filterData: {
         name: '',
         value: ''
@@ -85,6 +86,9 @@ export default {
     },
     async handleOper({ event, data }) {
       this.$emit(event, data);
+    },
+    resetPage() {
+      this.page = 1;
     }
   },
   computed: {

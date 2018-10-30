@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible.sync="visible" :width="width" :close-on-click-modal="false">
+  <el-dialog :title="title" :visible.sync="visible" :width="width" :close-on-click-modal="false" @close="$emit('cancel')">
     <el-form ref="form" :model="form" :rules="rules" v-bind="options">
       <slot>
         <el-form-item v-for="(item,index) in fields" :key="'form-field-'+index" :label="item.field.label" :prop="item.field.name" :required="item.field.required" :rules="item.rules" v-bind="item.formOpts">
