@@ -137,7 +137,8 @@ module.exports = {
         heartbeatOutgoing: 4000
       },
       weixin: {
-        baseUrl: `http://192.168.0.7:8000${url_prefix}/weixin`,
+        // baseUrl: `http://192.168.0.7:8000${url_prefix}/weixin`,
+        baseUrl: `${url_prefix}/weixin`,
       }
     }
   },
