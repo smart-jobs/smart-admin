@@ -10,7 +10,7 @@ module.exports = {
     ],
     "env": {
       "NODE_ENV": "production",  // 环境参数，当前指定为生产环境
-      "PORT": 3200,
+      "PORT": 3100,
     }
   }]
 }
