@@ -10,8 +10,16 @@ export const state = () => ({
 export const actions = {
   async nuxtServerInit({ commit, dispatch }, { req, app }) {
     console.log('call nuxtServerInit...');
-    console.log('x-tenant:', req.header('x-tenant'));
-    commit(types.PLATFORM_INIT, req.header('x-tenant'));
+    const tenant = req.header('x-tenant');
+    console.log('x-tenant:', tenant);
+    commit(types.PLATFORM_INIT, tenant);
+
+    if(tenant !== 'master') {
+      const res = await $axios.$get(`/naf/unit/fetch?code=${store.getters.unitcode}`);
+      console.log(res.data);
+      return res.data;
+    }
+
 
     // console.log(app.$axios);
     await dispatch('naf/menu/load');
