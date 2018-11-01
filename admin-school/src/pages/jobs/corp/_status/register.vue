@@ -5,24 +5,35 @@
     </data-grid>
     <el-card class="details" size="mini" v-else-if="view == 'details'">
       <div slot="header" class="clearfix">
-        <span>企业用户信息</span>
+        <span>企业注册信息</span>
         <el-button icon="el-icon-arrow-left" style="float: right; padding: 3px 10px;" type="text" @click="view = 'list'">返回</el-button>
       </div>
-      <cord-info :data="current">
-      </cord-info>
+      <data-info :data="current">
+      </data-info>
+      <div v-if="status == '2'">
+      <el-button type="primary" @click="handleReview('0')">审核通过</el-button>
+      <el-button type="info" @click="handleReview('3')">审核拒绝</el-button>
+      </div>
     </el-card>
   </div>
 </template>
 <script>
-import CordInfo from '@/jobs/cord-info';
+import DataInfo from '@/jobs/cord-info';
 import DataGrid from '@/naf/data/filter-grid';
 import { createNamespacedHelpers } from 'vuex';
 
 const { mapState, mapActions } = createNamespacedHelpers('jobs/corp');
 
+const RegisterStatus = {
+  NORMAL: '0', // 正常状态，审核通过
+  NEW: '1', // 新注册，未提交审核
+  INFO: '2', // 完善信息，等待审核
+  REJECT: '3', // 申请被拒绝
+};
+
 export default {
   components: {
-    CordInfo,
+    DataInfo,
     DataGrid
   },
   data() {
@@ -30,6 +41,7 @@ export default {
       view: 'list',
       fields: [
         { name: 'corpname', label: '企业名称' },
+        { name: 'status', label: '状态' },
         { name: 'info.city.name', label: '所在城市' },
         { name: 'info.scale.name', label: '企业规模' },
         { name: 'info.nature.name', label: '企业性质' },
@@ -44,13 +56,24 @@ export default {
       ] /* 操作类型 */
     };
   },
+  validate ({ params }) {
+    // Must be a number
+    return /^[0-3]$/.test(params.status)
+  },
+  asyncData ({params}) {
+    return { status: params.status }
+  },
   created() {
     this.handleQuery();
   },
+  watch: {
+    // call again the method if the route changes
+    'status': 'handleQuery'
+  },  
   methods: {
-    ...mapActions(['queryMem', 'fetchMem']),
+    ...mapActions(['queryReg', 'reviewReg', 'fetchReg']),
     async handleOpen(data) {
-      const res = await this.fetchMem({ id: data._id });
+      const res = await this.fetchReg({ id: data._id });
       if (this.$checkRes(res)) {
         this.view = 'details';
       }
@@ -62,7 +85,7 @@ export default {
       }
     },
     handleQuery({filter, paging } = {}) {
-      this.queryMem({ paging });
+      this.queryReg({ status: this.status, paging });
     },
   },
   computed: {

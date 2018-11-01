@@ -4,20 +4,33 @@ const cookieParser = process.server ? require('cookie') : undefined
 export const state = () => ({
   platform: 'school',
   unit: null,
+  name: null,
 })
 
 // actions
 export const actions = {
-  async nuxtServerInit({ commit, dispatch }, { req, app }) {
+  async nuxtServerInit({ commit, dispatch }, { req, app, error }) {
     console.log('call nuxtServerInit...');
     const tenant = req.header('x-tenant');
     console.log('x-tenant:', tenant);
-    commit(types.PLATFORM_INIT, tenant);
 
     if(tenant !== 'master') {
-      const res = await $axios.$get(`/naf/unit/fetch?code=${store.getters.unitcode}`);
-      console.log(res.data);
-      return res.data;
+      const res = await this.$axios.$get(`/naf/unit/fetch?code=${tenant}`);
+      if(res && res.errcode) {
+        console.error('fetch unit info fail:', res);
+        error({ message: res.errmsg });
+        return;
+      }
+      if(!res.data) {
+        console.error('fetch unit info fail, invalid code: ', tenant);
+        error({ message: '分站信息不存在' });
+        return ;
+      }
+      // console.log(res.data);
+      const { name } = res.data;
+      commit(types.PLATFORM_INIT, { unit: tenant, name });
+    } else {
+      commit(types.PLATFORM_INIT, { unit: tenant, name: '中心主站' });
     }
 
 
@@ -47,13 +60,14 @@ export const actions = {
 };
 
 export const mutations = {
-  [types.PLATFORM_INIT](state, payload = 'master') {
-    if(payload === 'master') {
+  [types.PLATFORM_INIT](state, { unit = 'master', name }) {
+    state.name = name;
+    if(unit === 'master') {
       state.platform = 'master';
       state.unit = null;
     } else {
       state.platform = 'school';
-      state.unit = payload;
+      state.unit = unit;
     }
   },
 }

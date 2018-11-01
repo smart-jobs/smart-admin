@@ -5,64 +5,85 @@
     </data-grid>
     <el-card class="details" size="mini" v-else-if="view == 'details'">
       <div slot="header" class="clearfix">
-        <span>企业用户信息</span>
+        <span>招聘会</span>
         <el-button icon="el-icon-arrow-left" style="float: right; padding: 3px 10px;" type="text" @click="view = 'list'">返回</el-button>
       </div>
-      <cord-info :data="current">
-      </cord-info>
+      <data-info :data="current">
+      </data-info>
+      <div v-if="status == '1'">
+      <el-button type="primary" @click="handleReview('0')">审核通过</el-button>
+      <el-button type="info" @click="handleReview('2')">审核拒绝</el-button>
+      </div>
     </el-card>
   </div>
 </template>
 <script>
-import CordInfo from '@/jobs/cord-info';
+import DataInfo from '@/jobs/fair-info';
 import DataGrid from '@/naf/data/filter-grid';
 import { createNamespacedHelpers } from 'vuex';
 
-const { mapState, mapActions } = createNamespacedHelpers('jobs/corp');
+const { mapState, mapActions } = createNamespacedHelpers('jobs/jobfair');
+
+const JobfairStatus = {
+  OPENING: '0', // 开放申请
+  CLOSED: '1', // 已关闭
+  IN_PROGRESS: '2', // 进行中
+};
+
 
 export default {
   components: {
-    CordInfo,
+    DataInfo,
     DataGrid
   },
   data() {
     return {
       view: 'list',
       fields: [
-        { name: 'corpname', label: '企业名称' },
-        { name: 'info.city.name', label: '所在城市' },
-        { name: 'info.scale.name', label: '企业规模' },
-        { name: 'info.nature.name', label: '企业性质' },
-        { name: 'info.industry.name', label: '所属行业' },
-        { name: 'contact.person', label: '联系人' },
-        { name: 'contact.mobile', label: '联系人电话' },
-        { name: 'contact.email', label: '电子邮件' },
+        { name: 'subject', label: '主题' },
+        { name: 'type', label: '类型' },
+        { name: 'status', label: '状态' },
+        { name: 'city.name', label: '举办城市' },
+        { name: 'address', label: '举办地址' },
+        { name: 'time', label: '举办时间' },
         { name: 'meta.createdAt', label: '创建时间' },
       ],
       operation: [
         ['open', '查看'],
+        ['edit', '编辑'],
       ] /* 操作类型 */
     };
+  },
+  validate ({ params }) {
+    // Must be a number
+    return /^[0-2]$/.test(params.status)
+  },
+  asyncData ({params}) {
+    return { status: params.status }
   },
   created() {
     this.handleQuery();
   },
+  watch: {
+    // call again the method if the route changes
+    'status': 'handleQuery'
+  },  
   methods: {
-    ...mapActions(['queryMem', 'fetchMem']),
+    ...mapActions(['query', 'review', 'fetch']),
     async handleOpen(data) {
-      const res = await this.fetchMem({ id: data._id });
+      const res = await this.fetch({ id: data._id });
       if (this.$checkRes(res)) {
         this.view = 'details';
       }
     },
     async handleReview(status) {
-      const res = await this.reviewReg({ status, id: this.current._id });
+      const res = await this.review({ status, id: this.current._id });
       if (this.$checkRes(res, '审核操作成功')) {
         this.view = 'list';
       }
     },
     handleQuery({filter, paging } = {}) {
-      this.queryMem({ paging });
+      this.query({ status: this.status, paging });
     },
   },
   computed: {
