@@ -85,7 +85,7 @@ module.exports = {
   vue: {
     config: {
       wxapi: {
-        baseUrl: 'http://www.jilinobswx.cn/auth', 
+        baseUrl: 'http://www.jilinobswx.cn', 
       },
     }
   },
