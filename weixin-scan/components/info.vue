@@ -13,6 +13,10 @@
       <slot name="opr">
       </slot>
     </div>
+    <div class="weui-msg__extra-area">
+      <slot name="extra">
+      </slot>
+    </div>
   </div>
 </template>
 
@@ -22,20 +26,20 @@ export default {
     title: {
       type: String,
       default: '信息',
-    }, 
+    },
     message: {
       type: String,
       default: '',
-    }, 
+    },
     type: {
-      type: String ,
+      type: String,
       default: 'info',
     },
   },
   computed: {
     iconCls() {
       return `weui-icon-${this.type}`;
-    }
-  }
+    },
+  },
 };
 </script>
