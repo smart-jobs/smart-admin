@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 
 /* 字段定义 */
 export const FieldMeta = (meta) => {
@@ -69,7 +70,10 @@ export const Operation = (meta) => {
 
 // 预置formatter函数
 const formatters = {
-  date: () => (row, column, cellValue, index) => {
+  date: (param) => (row, column, cellValue, index) => {
+    if (cellValue) {
+      return moment(cellValue).format(param||'YYYY-MM-DD');
+    }
     return cellValue;
   },
   dict: (param) => {

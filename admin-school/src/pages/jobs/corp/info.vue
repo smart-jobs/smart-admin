@@ -48,21 +48,15 @@ export default {
     this.handleQuery();
   },
   methods: {
-    ...mapActions(['queryMem', 'fetchMem']),
+    ...mapActions(['queryInfo', 'fetchInfo']),
     async handleOpen(data) {
-      const res = await this.fetchMem({ id: data._id });
+      const res = await this.fetchInfo({ id: data._id });
       if (this.$checkRes(res)) {
         this.view = 'details';
       }
     },
-    async handleReview(status) {
-      const res = await this.reviewReg({ status, id: this.current._id });
-      if (this.$checkRes(res, '审核操作成功')) {
-        this.view = 'list';
-      }
-    },
     handleQuery({filter, paging } = {}) {
-      this.queryMem({ paging });
+      this.queryInfo({ paging });
     },
   },
   computed: {

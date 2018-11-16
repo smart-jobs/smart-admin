@@ -13,16 +13,16 @@ const navDatas = [
     path: '/jobs',
     module: 'jobs',
   },
-  {
-    title: '信息发布',
-    path: '/cms',
-    module: 'cms',
-  },
-  {
-    title: '公文系统',
-    path: '/docflow',
-    module: 'docflow',
-  },
+  // {
+  //   title: '信息发布',
+  //   path: '/cms',
+  //   module: 'cms',
+  // },
+  // {
+  //   title: '公文系统',
+  //   path: '/docflow',
+  //   module: 'docflow',
+  // },
   {
     title: '友情链接',
     module: 'links',
@@ -84,11 +84,11 @@ const datas = [
         path: '/system/tag',
         icon: 'tag',
       },
-      {
-        title: '操作日志',
-        path: '/system/log',
-        icon: 'log',
-      },
+      // {
+      //   title: '操作日志',
+      //   path: '/system/log',
+      //   icon: 'log',
+      // },
     ],
   },
   {
@@ -103,7 +103,12 @@ const datas = [
         icon: 'shenhe',
         children: [
           {
-            title: '待注册',
+            title: '已审核',
+            path: '/jobs/corp/0/register',
+            icon: 'shenhe',
+          },
+          {
+            title: '待审核',
             path: '/jobs/corp/2/register',
             icon: 'shenhe',
           },
@@ -119,7 +124,7 @@ const datas = [
           },],
       },
       {
-        title: '企业信息',
+        title: '企业信息总库',
         path: '/jobs/corp/info',
         icon: 'renzheng',
       },
@@ -217,29 +222,29 @@ const datas = [
       },
     ],
   },
-  {
-    title: '收文管理',
-    path: '/docflow',
-    icon: 'news',
-    module: 'docflow',
-    children: [
-      {
-        title: '待收公文',
-        path: '/docflow/news',
-        icon: 'caogao',
-      },
-      {
-        title: '在办公文',
-        path: '/docflow/inbox',
-        icon: 'doc1',
-      },
-      {
-        title: '归档公文',
-        path: '/docflow/archive',
-        icon: 'column',
-      },
-    ],
-  },
+  // {
+  //   title: '收文管理',
+  //   path: '/docflow',
+  //   icon: 'news',
+  //   module: 'docflow',
+  //   children: [
+  //     {
+  //       title: '待收公文',
+  //       path: '/docflow/news',
+  //       icon: 'caogao',
+  //     },
+  //     {
+  //       title: '在办公文',
+  //       path: '/docflow/inbox',
+  //       icon: 'doc1',
+  //     },
+  //     {
+  //       title: '归档公文',
+  //       path: '/docflow/archive',
+  //       icon: 'column',
+  //     },
+  //   ],
+  // },
   {
     title: '友情链接',
     icon: 'menu',

@@ -18,7 +18,8 @@
     <el-main class="table-area">
       <el-table border style="width: 100%;overflow: auto;" v-bind="options" :data="data">
         <slot>
-          <el-table-column v-for="(item,index) in listFields" :key="'field'+index" :label="item.label" :prop="item.name" v-bind="item.options" />
+          <el-table-column v-for="(item,index) in listFields" :key="'field'+index" :label="item.label" 
+            :prop="item.name" v-bind="item.options" show-overflow-tooltip/>
           <el-table-column label="操作" width="100">
             <template slot-scope="scope">
               <el-button v-for="(item,index) in operItems" :key="'field'+index" @click="handleOper(item, scope.row)" type="text" size="small">{{item.label}}</el-button>

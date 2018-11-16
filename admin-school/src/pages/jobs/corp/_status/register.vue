@@ -49,7 +49,7 @@ export default {
         { name: 'contact.person', label: '联系人' },
         { name: 'contact.mobile', label: '联系人电话' },
         { name: 'contact.email', label: '电子邮件' },
-        { name: 'meta.createdAt', label: '创建时间' },
+        { name: 'meta.createdAt', label: '创建时间', formatter: ['date', 'YYYY-MM-DD HH:mm'] },
       ],
       operation: [
         ['open', '查看'],
@@ -73,13 +73,13 @@ export default {
   methods: {
     ...mapActions(['queryReg', 'reviewReg', 'fetchReg']),
     async handleOpen(data) {
-      const res = await this.fetchReg({ id: data._id });
+      const res = await this.fetchReg({ id: data.corpid });
       if (this.$checkRes(res)) {
         this.view = 'details';
       }
     },
     async handleReview(status) {
-      const res = await this.reviewReg({ status, id: this.current._id });
+      const res = await this.reviewReg({ status, id: this.current.corpid });
       if (this.$checkRes(res, '审核操作成功')) {
         this.view = 'list';
       }

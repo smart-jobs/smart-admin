@@ -6,11 +6,13 @@ import config from '@/utils/config.js';
 const { pageSize = 10 } = config;
 
 const api = {
-  queryReg: '/jobs/corp/register/query',
-  reviewReg: '/jobs/corp/register/review',
-  fetchReg: '/jobs/corp/register/fetch',
-  queryMem: '/jobs/corp/member/query',
-  fetchMem: '/jobs/corp/member/fetch',
+  queryReg: '/jobs/corp/reg/query',
+  reviewReg: (id)=>`/jobs/corp/reg/${id}/review`,
+  updateReg: (id)=>`/jobs/corp/reg/${id}/update`,
+  fetchReg: (id)=>`/jobs/corp/reg/${id}/details`,
+  queryInfo: '/jobs/corp/info/query',
+  fetchInfo: (id)=>`/jobs/corp/info/${id}/details`,
+  updateInfo: (id)=>`/jobs/corp/info/${id}/update`,
 }
 // initial state
 export const state = () => ({
@@ -31,32 +33,46 @@ export const actions = {
     }
     return res;
   },
-  async reviewReg({ commit }, { status, id }) {
-    const res = await this.$axios.$post(`${api.reviewReg}?id=${id}`, { status });
+  async reviewReg({ commit }, { id, status, remark }) {
+    const res = await this.$axios.$post(api.reviewReg(id), { status, remark });
     if(res.errcode === 0)
-      commit(types.UPDATED, { status, id });
+      commit(types.UPDATED, res.data);
+    return res;
+  },
+  async updateReg({ commit }, payload) {
+    const { id } = payload;
+    const res = await this.$axios.$post(api.reviewReg(id), payload);
+    if(res.errcode === 0)
+      commit(types.UPDATED, res.data);
     return res;
   },
   async fetchReg({ commit }, { id }) {
-    const res = await this.$axios.$get(`${api.fetchReg}?id=${id}`);
+    const res = await this.$axios.$get(api.fetchReg(id));
     if(res.errcode === 0)
       commit(types.SELECTED, res.data);
     return res;
   },
-  async queryMem({ commit }, { status, corpname, paging = {} }) {
+  async queryInfo({ commit }, { status, corpname, paging = {} }) {
     const { page = 1, size = pageSize } = paging;
     const skip = Math.max(0, (page-1)*size);
     const param = qs.stringify({status, corpname, skip, size});
-    const res = await this.$axios.$get(`${api.queryMem}?${param}`)
+    const res = await this.$axios.$get(`${api.queryInfo}?${param}`)
     if(res.errcode === 0) {
       commit(types.LOADED, res);
     }
     return res;
   },
-  async fetchMem({ commit }, { id }) {
-    const res = await this.$axios.$get(`${api.fetchMem}?id=${id}`);
+  async fetchInfo({ commit }, { id }) {
+    const res = await this.$axios.$get(api.fetchInfo(id));
     if(res.errcode === 0)
       commit(types.SELECTED, res.data);
+    return res;
+  },
+  async updateInfo({ commit }, payload) {
+    const { id } = payload;
+    const res = await this.$axios.$post(api.reviewReg(id), payload);
+    if(res.errcode === 0)
+      commit(types.UPDATED, res.data);
     return res;
   },
 };
