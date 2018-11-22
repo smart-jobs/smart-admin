@@ -4,9 +4,9 @@ const url_prefix = `/platform`;
 module.exports = {
   // mode: 'spa',
   srcDir: 'src',
-  // server: {
-  //   port: 3100,
-  // },
+  server: {
+    port: 3200,
+  },
   /*
   ** Headers of the page
   */
@@ -142,4 +142,8 @@ module.exports = {
       }
     }
   },
+  serverMiddleware: [
+    // API middleware
+    '~/api/index.js'
+  ],
 }
