@@ -11,7 +11,7 @@ export const state = () => ({
 export const actions = {
   async nuxtServerInit({ commit, dispatch }, { req, app, error }) {
     console.log('call nuxtServerInit...');
-    const tenant = req.header('x-tenant');
+    const tenant = req.headers['x-tenant'] || '99991';
     console.log('x-tenant:', tenant);
 
     if(tenant !== 'master') {
