@@ -8,6 +8,13 @@
 		},
 		{
 			"path": "weixin-scan"
+		},
+		{
+			"path": "node_modules"
+		},
+		{
+			"path": "admin-frame"
 		}
-	]
+	],
+	"settings": {}
 }
